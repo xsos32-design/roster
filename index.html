@@ -453,6 +453,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.2", d:"2026-10-07", items:[ "組長名字下方不再顯示組別（一組／二組／三組）", "移除石世偉、楊哲彥的資料" ]},
   { v:"3.1", d:"2026-10-07", items:[ "橫幅改成乾淨版：拿掉背景照片和裝飾，「營業三部」放大", "月份改成「‹ 115年10月 ›」切換列，左右鍵換月，中間點開可直接選", "理級名片只顯示職稱（協理／經理／副理／理級）", "登入頁拿掉照片，改成簡單圖示" ]},
   { v:"3.0", d:"2026-10-07", items:[ "賽博風格改為預設（要原本樣式可用 ?theme=light）", "「主管」改稱「理級」，排序：協理 → 經理 → 副理 → 其他理級", "橫幅和登入頁改用 Unsplash 開源照片（攝影：Tsukada Kazuhiro），圖示換成 Lucide 開源圖示" ]},
   { v:"2.3", d:"2026-10-07", items:[ "新增賽博風格（試用）：網址加 ?theme=cyber 開啟，會記住；加 ?theme=light 換回原本樣式" ]},
@@ -624,7 +625,7 @@ function renderDetail(){
         const pp = ppl.filter(x=>x.a.phase===ph); if(!pp.length) continue;
         const ordered = off ? pp : [...pp.filter(x=>isMain(x.i)), ...pp.filter(x=>!isMain(x.i))];
         q += `<div class="ph">${ph}</div>`;
-        for(const {n,a,i} of ordered) q += personLine(n, i, esc([a.team, i.note].filter(Boolean).join("・")), a.code);
+        for(const {n,a,i} of ordered) q += personLine(n, i, esc(i.note||""), a.code);
       }
       q += `</section>`;
     }
