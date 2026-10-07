@@ -371,6 +371,12 @@ html.cyber .qgrid .quad.qtop{border-radius:6px 6px 0 0} html.cyber .qgrid .quad.
 .sarrow{color:var(--gold);display:flex} .sarrow svg{width:28px;height:28px}
 html.cyber .sside{border-radius:6px} html.cyber .sarrow{color:#F5E43A}
 @media (max-width:520px){.swapgrid{gap:4px}.sside{padding:8px 6px}.sarrow svg{width:22px;height:22px}}
+.shchips{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px}
+.shchips .shl{font-size:13px;font-weight:700;color:var(--mute);margin-right:2px}
+.shchips button{min-height:38px;min-width:3.2em;padding:4px 10px;font-family:var(--mono);font-weight:700;font-size:15px;border:2px solid var(--navy);color:var(--navy);background:transparent;border-radius:8px}
+.shchips button.on{background:var(--navy);color:var(--card)}
+html.cyber .shchips button{border-radius:4px;border-color:#22E6FF;color:#22E6FF;background:transparent}
+html.cyber .shchips button.on{background:#22E6FF;color:#04121A}
 </style>
 </head>
 <body>
@@ -413,7 +419,8 @@ html.cyber .sside{border-radius:6px} html.cyber .sarrow{color:#F5E43A}
         <div class="sarrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg></div>
         <div class="sside"><div class="slab">換成</div><select id="bName" aria-label="人名"></select><select id="bDay" aria-label="日期"></select><div class="scur" id="bCur"></div></div>
       </div>
-      <div class="hint">右邊選自己＝自己兩天的班對調；選別人＝同一天互換；選班別（K6、K8、KA、L0、L2、L4、L9）＝直接把自己這天改成該班別。</div>
+      <div class="shchips" id="shChips"><span class="shl">我這天改成</span><button type="button" data-sh="K6">K6</button><button type="button" data-sh="K8">K8</button><button type="button" data-sh="KA">KA</button><button type="button" data-sh="L0">L0</button><button type="button" data-sh="L2">L2</button><button type="button" data-sh="L4">L4</button><button type="button" data-sh="L9">L9</button></div>
+      <div class="hint">右邊選自己＝自己兩天的班對調；選別人＝同一天互換；按班別按鈕＝直接把左邊這天改成該班別（會先跳出確認）。</div>
       <div class="frow"><button class="primary" id="saveBtn">存檔</button></div>
       <div class="confirm" id="confirmBox" hidden>
         <div id="confirmText"></div>
@@ -460,6 +467,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.9", d:"2026-10-07", items:[ "調班區加上班別按鈕列「我這天改成 K6 K8 KA L0 L2 L4 L9」，按一下就出現確認" ]},
   { v:"3.8", d:"2026-10-07", items:[ "調班右邊可選「直接改成班別」：K6、K8、KA、L0、L2、L4、L9，把自己當天的班直接改掉（有 FD 會保留）" ]},
   { v:"3.7", d:"2026-10-07", items:[ "調班畫面改成「人名・班別 ⇄ 人名・班別」並排", "右邊選自己就是自己兩天對調；選別人時日期自動對齊同一天" ]},
   { v:"3.6", d:"2026-10-07", items:[ "調班登入不用密碼：選名字直接登入，只能調自己的班", "管理者仍需輸入管理者密碼" ]},
@@ -723,7 +731,7 @@ function showCur(){
   const c = current(); if(!c) return;
   for(const s of ["a","b"]){
     const d = $(s+"Day").value, n = $(s+"Name").value, p = c.m.people[n];
-    if(s==="b"){ const sh = n.startsWith("@"); $("bDay").hidden = sh; if(sh){ $("bCur").innerHTML = `<span class="bd w">${esc(n.slice(1))}</span>`; continue; } }
+    if(s==="b"){ const sh = n.startsWith("@"); $("bDay").hidden = sh; document.querySelectorAll("#shChips [data-sh]").forEach(x=>x.classList.toggle("on", "@"+x.dataset.sh===n)); if(sh){ $("bCur").innerHTML = `<span class="bd w">${esc(n.slice(1))}</span>`; continue; } }
     if(!p){ $(s+"Cur").textContent=""; continue; }
     const raw = c.cells[n][d]; $(s+"Cur").innerHTML = `<span class="bd ${badgeCls(info(p, raw))}">${esc(shown(p, raw))}</span>`;
   }
@@ -867,6 +875,7 @@ $("loginBtn").addEventListener("click", doLogin);
 $("pw").addEventListener("keydown", e=>{ if(e.key==="Enter") doLogin(); });
 $("logoutBtn").addEventListener("click", ()=>{ S.user=null; S.admin=false; S.pw=""; $("admTag").hidden=true; $("admBox").hidden=true; $("aName").disabled=true; S.delAt=null; $("aName").innerHTML=""; renderHist(); $("swapBox").hidden=true; $("loginBox").hidden=false; msg(""); });
 for(const id of ["aDay","aName","bDay","bName"]) $(id).addEventListener("change", showCur);
+$("shChips").addEventListener("click", e=>{ const b=e.target.closest("[data-sh]"); if(!b) return; $("bName").value = "@"+b.dataset.sh; $("confirmBox").hidden = true; showCur(); askSave(); });
 $("bName").addEventListener("change", ()=>{ $("confirmBox").hidden = true; if(!$("bName").value.startsWith("@") && $("bName").value !== $("aName").value){ $("bDay").value = $("aDay").value; showCur(); } });
 $("aDay").addEventListener("change", ()=>{ if(!$("bName").value.startsWith("@") && $("bName").value !== $("aName").value){ $("bDay").value = $("aDay").value; showCur(); } });
 $("saveBtn").addEventListener("click", askSave);
