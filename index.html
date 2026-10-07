@@ -61,6 +61,13 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .day.sel{border-color:var(--navy);box-shadow:0 0 0 2px var(--navy) inset}
 .day.sel:not(.today):not(.hol){background:var(--card)}
 .day.empty{visibility:hidden}
+.day{position:relative}
+.lkw{position:absolute;top:4px;right:4px;color:var(--mute);display:flex}
+.lkw .lk,.lkn .lk{width:12px;height:12px}
+.lkn{display:inline-flex;align-items:center;gap:4px;font-size:12px;background:var(--soft);color:var(--mute);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+.adm{background:var(--navy);color:#FFFFFF;border-radius:6px;font-size:11px;padding:1px 7px;margin-left:6px;font-weight:700}
+.admbox{border:1px dashed var(--gold);background:var(--goldbg);border-radius:12px;padding:12px;display:grid;gap:10px}
+.admbox h4{margin:0;font-size:13px;color:#8A6418}
 @media (max-width:520px){.dow,.grid{gap:4px}.day{min-height:50px;padding:4px 1px;border-radius:9px}.day .n{font-size:14px}.day .hn,.day .ev{font-size:9px}.day .ev{padding:1px 2px}}
 .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mute);margin-top:12px}
 .legend span{display:inline-flex;align-items:center;gap:6px}
@@ -134,6 +141,8 @@ details[open].panel>summary::after{content:"收合"}
 .hist li{padding:10px 12px;border-radius:10px;background:var(--soft);font-size:13.5px;display:grid;gap:2px}
 .hist .meta{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--mute)}
 .hist time{font-family:var(--mono)}
+.hist .del{margin-left:auto;min-height:30px;padding:2px 10px;font-size:12px;color:var(--bad);border-color:#F3C9C4;background:var(--card)}
+.hist .confirm{margin-top:6px}
 .hist .who{font-weight:700;color:var(--navy)}
 .empty-state{color:var(--mute);font-size:13.5px;padding:10px 0}
 .empty-art{display:grid;justify-items:center;gap:8px;padding:24px 0;color:var(--mute);font-size:13.5px;text-align:center}
@@ -205,7 +214,7 @@ details[open].panel>summary::after{content:"收合"}
       <div class="grid" id="grid"><div class="loading" style="grid-column:1/-1">讀取班表中…</div></div>
       <div class="legend">
         <span><i style="background:var(--badbg);border:1px solid #F3C9C4"></i>國定假日／補假（人事行政總處 115 年辦公日曆表，今年無補班日）</span>
-        <span><i style="background:#FFE27A;border:1px solid #E8B923"></i>今天</span><span><i style="border:2px solid var(--navy)"></i>選取中</span>
+        <span><i style="background:#FFE27A;border:1px solid #E8B923"></i>今天</span><span><i style="border:2px solid var(--navy)"></i>選取中</span><span class="lkn" style="border:0;background:none;padding:0"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>鎖定（不能調班）</span>
         <span><i style="background:var(--navy);border-radius:3px;width:22px;height:10px"></i>部門行程</span>
       </div>
     </section>
@@ -221,7 +230,7 @@ details[open].panel>summary::after{content:"收合"}
       <div class="msg" id="loginMsg"></div>
     </div>
     <div id="swapBox" class="form" hidden>
-      <div class="frow" style="justify-content:space-between"><span>已登入：<b id="whoName"></b></span><button id="logoutBtn">登出</button></div>
+      <div class="frow" style="justify-content:space-between"><span>已登入：<b id="whoName"></b><span class="adm" id="admTag" hidden>管理者</span></span><button id="logoutBtn">登出</button></div>
       <div class="slot">
         <h4>我的班</h4>
         <div class="frow"><label for="aDay">日期</label><select id="aDay"></select><select id="aName" aria-label="名稱" disabled></select></div>
@@ -232,7 +241,7 @@ details[open].panel>summary::after{content:"收合"}
         <h4>跟誰的班對調</h4>
         <div class="frow"><label for="bDay">日期</label><select id="bDay"></select><select id="bName" aria-label="名稱"></select></div>
         <div class="cur" id="bCur"></div>
-        <div class="hint">只能調整自己的班；對調對象可以選別人，也可以選自己另一天。</div>
+        <div class="hint">只能調整自己的班。跟別人調班只能同一天互換；自己的班可以選另一天對調（例如休假日和上班日互換）。</div>
       </div>
       <div class="frow"><button class="primary" id="saveBtn">存檔</button></div>
       <div class="confirm" id="confirmBox" hidden>
@@ -240,6 +249,14 @@ details[open].panel>summary::after{content:"收合"}
         <div class="frow"><button class="primary" id="yesBtn">確定對調</button><button id="noBtn">取消</button></div>
       </div>
       <div class="msg" id="swapMsg"></div>
+      <div class="admbox" id="admBox" hidden>
+        <h4>管理者工具</h4>
+        <div class="frow"><label for="sDay">直接改班</label><select id="sDay"></select><select id="sName" aria-label="名稱"></select><input id="sVal" aria-label="新班別" placeholder="例：K6、L2、本3、FD" style="width:9em"><button class="primary" id="sBtn">存檔</button></div>
+        <div class="cur" id="sCur"></div>
+        <div class="frow"><label for="lDay">鎖定日期</label><select id="lDay"></select><button id="lBtn">鎖定</button></div>
+        <div class="hint">鎖定的日期一般人不能調班，管理者不受限制。管理者對調班別不受調班規則限制，請自行確認合理。</div>
+        <div class="msg" id="admMsg"></div>
+      </div>
     </div>
   </details>
 
@@ -247,7 +264,11 @@ details[open].panel>summary::after{content:"收合"}
     <h2 class="ptitle" style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>歷史更改紀錄<span class="hint" id="histCount" style="margin-left:auto;font-weight:500"></span></h2>
     <ul class="hist" id="hist"><li class="empty-state">這個月還沒有人調班。</li></ul>
   </section>
-  <div class="foot">班表來源：營三部幹部班表 · 調班存檔後所有人看到的班表同步更新（每 30 秒自動更新）</div>
+  <details class="panel" id="verBox">
+    <summary style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12l4 4v12H4z"/><path d="M8 10h8M8 14h8M8 18h5"/></svg>版本更新紀錄<span class="hint" id="verNow" style="margin-left:6px;font-weight:500"></span></summary>
+    <ul class="hist" id="verList"></ul>
+  </details>
+  <div class="foot">班表來源：營三部幹部班表 · 調班存檔後所有人看到的班表同步更新（每 30 秒自動更新） · <span id="verFoot"></span></div>
 </div>
 
 <div class="sheet-bg" id="sheet" hidden>
@@ -266,6 +287,20 @@ details[open].panel>summary::after{content:"收合"}
 <script>
 const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYpOw3XYjC5XQWEgI1DjK97fkvrvxWKN91Y32ba2S0sYQ/exec";
 const WD = ["日","一","二","三","四","五","六"];
+/* 版本更新紀錄：新版本加在最上面 */
+const VERSIONS = [
+  { v:"1.2", d:"2026-10-07", items:[
+    "新增管理者密碼：輸入後為管理者，可調整任何人的班、不受調班規則限制",
+    "管理者工具：直接修改某格班別、鎖定／解除鎖定日期（鎖定日一般人不能調班，月曆顯示鎖頭）",
+    "刪除調班紀錄（＝還原）改為只有管理者能做",
+    "新增版本更新紀錄" ]},
+  { v:"1.1", d:"2026-10-07", items:[
+    "調班規則：跟別人只能同一天互換；自己可以跨天對調；同班別、兩格都休假、副理與組長互調一律擋下",
+    "歷史紀錄可刪除，刪除即還原該次調班；之後有動到同一格的調班要先刪較新的" ]},
+  { v:"1.0", d:"2026-10-07", items:[
+    "上線：月曆（國定假日紅色、部門行程、今天黃色）、點日期看副理與組長班別、FD 值星★、點名字撥打電話",
+    "密碼進入、登入後調自己的班、歷史紀錄、所有人同步更新" ]}
+];
 /* 行政院人事行政總處「中華民國115年政府行政機關辦公日曆表」：國定假日與補假；115年無補行上班日（補班日請以「…補班」標示） */
 const HOL = {
   "2026-01-01":"開國紀念日","2026-02-15":"小年夜","2026-02-16":"除夕","2026-02-17":"春節","2026-02-18":"春節","2026-02-19":"春節","2026-02-20":"春節補假",
@@ -289,6 +324,7 @@ function current(){                         // base cells + swaps replayed in ti
   const touched = new Set();
   for (const s of S.swaps){
     const a = s.a, b = s.b;
+    if(s.type==="set"){ if(cells[a.name]){ cells[a.name][a.day] = s.value||""; touched.add(String(a.day)); } continue; }
     if(!cells[a.name] || !cells[b.name]) continue;
     const va = cells[a.name][a.day] || "", vb = cells[b.name][b.day] || "";
     cells[a.name][a.day] = vb; cells[b.name][b.day] = va;
@@ -296,6 +332,7 @@ function current(){                         // base cells + swaps replayed in ti
   }
   return { m, cells, touched };
 }
+const isLocked = d => (S.locks||[]).some(l=>l.month===S.mk && String(l.day)===String(d));
 const OFF_RE = /本\s*\d|國\s*\d|國補|國休|^國$|喪|補休|加補|特休|^A$/;
 function info(p, raw){
   const v = (raw||"").trim();
@@ -328,7 +365,7 @@ function renderGrid(){
     const hol = HOL[`${m.year}-${String(m.month).padStart(2,"0")}-${String(d).padStart(2,"0")}`];
     const isWork = hol && hol.endsWith("補班");
     h += `<button class="day${hol&&!isWork?" hol":""}${isWork?" mk":""}${isThis&&now.getDate()===d?" today":""}${S.sel===d?" sel":""}" data-d="${d}" aria-label="${m.month}月${d}日${hol?" "+hol:""}">
-      <span class="n"><span>${d}</span></span>${hol?`<span class="hn">${esc(hol)}</span>`:""}${(m.notes||{})[d]?`<span class="ev">${esc(m.notes[d])}</span>`:""}</button>`;
+      <span class="n"><span>${d}</span></span>${isLocked(d)?`<span class="lkw"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>`:""}${hol?`<span class="hn">${esc(hol)}</span>`:""}${(m.notes||{})[d]?`<span class="ev">${esc(m.notes[d])}</span>`:""}</button>`;
   }
   g.innerHTML = h;
 }
@@ -344,7 +381,7 @@ function renderDetail(){
   if(!c || !S.sel){ box.innerHTML = '<div class="empty-state">點月曆上的日期，看當天班別。</div>'; return; }
   const { m, cells } = c; const d = S.sel;
   const wd = WD[dateOf(m,d).getDay()]; const hol = HOL[hk(m,d)];
-  let h = `<div class="dhead${hol?" h":""}"><div class="cal"><b>${m.month}月</b><span>${d}</span></div><div><div class="wd">星期${wd}</div><div class="tags">${hol?`<span class="tag red">${esc(hol)}</span>`:""}${(m.notes||{})[d]?`<span class="tag">${esc(m.notes[d])}</span>`:""}</div></div></div>`;
+  let h = `<div class="dhead${hol?" h":""}"><div class="cal"><b>${m.month}月</b><span>${d}</span></div><div><div class="wd">星期${wd}</div><div class="tags">${hol?`<span class="tag red">${esc(hol)}</span>`:""}${(m.notes||{})[d]?`<span class="tag">${esc(m.notes[d])}</span>`:""}${isLocked(d)?`<span class="lkn"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>已鎖定・不能調班</span>`:""}</div></div></div>`;
   h += `<div class="sec">${ICON_BADGE}當值副理 / 副理班別</div>`;
   let anyVice = false;
   for(const n of VICE){
@@ -386,9 +423,20 @@ function renderHist(){
   if(!list.length){ ul.innerHTML = '<li class="empty-state">這個月還沒有人調班。</li>'; return; }
   ul.innerHTML = list.map(s=>{
     const pa = m?.people[s.a.name]||{}, pb = m?.people[s.b.name]||{};
-    return `<li><div class="meta"><time>${fmtTime(s.at)}</time><span class="who">${esc(s.by)}</span>調班</div>
-      <div>${m?.month}/${esc(s.a.day)} ${esc(s.a.name)}「${esc(shown(pa,s.a.before))}」 ⇄ ${m?.month}/${esc(s.b.day)} ${esc(s.b.name)}「${esc(shown(pb,s.b.before))}」</div></li>`;
-  }).join("");
+    return `<li><div class="meta"><time>${fmtTime(s.at)}</time><span class="who">${esc(s.by)}</span>${s.type==="set"?"直接改班":"調班"}${S.admin?`<button type="button" class="del" data-at="${esc(s.at)}">刪除並還原</button>`:""}</div>
+      <div>${s.type==="set" ? `${m?.month}/${esc(s.a.day)} ${esc(s.a.name)}「${esc(shown(pa,s.a.before))}」→「${esc(shown(pa,s.value))}」` : `${m?.month}/${esc(s.a.day)} ${esc(s.a.name)}「${esc(shown(pa,s.a.before))}」 ⇄ ${m?.month}/${esc(s.b.day)} ${esc(s.b.name)}「${esc(shown(pb,s.b.before))}」`}</div>
+      ${S.delAt===s.at?`<div class="confirm">確定刪除這筆紀錄？班表會還原成這次調班之前的樣子。<div class="frow"><button type="button" class="primary" data-yes="${esc(s.at)}">確定刪除</button><button type="button" data-no="1">取消</button></div></div>`:""}</li>`;
+  }).join("") + (S.admin ? "" : '<li class="hint" style="background:none;padding:4px 0">管理者登入後，可以刪除紀錄來還原調班。</li>') + (S.histMsg?`<li class="msg ${S.histMsg.k}" style="background:none;padding:4px 0">${esc(S.histMsg.t)}</li>`:"");
+}
+async function delSwap(at){
+  S.histMsg = {k:"", t:"刪除中…"}; renderHist();
+  try{
+    const r = await fetch(API, { method:"POST", body: JSON.stringify({ k:S.key, pw:S.pw, action:"del", at, by:S.user }) });
+    const j = await r.json();
+    if(!j.ok) throw new Error(j.msg||"刪除失敗，請稍後再試一次。");
+    S.delAt = null; S.histMsg = {k:"ok", t:"已刪除，班表已還原。"};
+    await load(); renderHist();
+  }catch(e){ S.delAt = null; S.histMsg = {k:"err", t: /Failed to fetch|NetworkError|JSON/.test(e.message) ? "刪除失敗，請檢查網路後再試一次。" : e.message}; renderHist(); }
 }
 
 /* ---------- settings ---------- */
@@ -401,9 +449,27 @@ function fillSelectors(){
   $("who").innerHTML = uniq.map(n=>`<option>${n}</option>`).join(""); if(keepWho) $("who").value = keepWho;
   const dayOpts = Array.from({length:m.days},(_,i)=>i+1).map(d=>`<option value="${d}">${m.month}/${d}（${WD[dateOf(m,d).getDay()]}）</option>`).join("");
   for(const id of ["aDay","bDay"]){ const k=$(id).value; $(id).innerHTML = dayOpts; if(k) $(id).value=k; }
-  $("aName").innerHTML = S.user ? `<option value="${S.user}">${S.user}</option>` : "";
+  if(S.admin){ const k=$("aName").value; $("aName").innerHTML = nameOpts; $("aName").value = k||S.user; }
+  else $("aName").innerHTML = S.user ? `<option value="${S.user}">${S.user}</option>` : "";
+  for(const id of ["sDay","lDay"]){ const k=$(id).value; $(id).innerHTML = dayOpts; if(k) $(id).value=k; }
+  { const k=$("sName").value; $("sName").innerHTML = nameOpts; if(k) $("sName").value=k; }
+  showAdm();
   { const k=$("bName").value; $("bName").innerHTML = nameOpts; if(k) $("bName").value=k; }
   showCur();
+}
+function showAdm(){
+  const c = current(); if(!c || !S.admin) return;
+  const d=$("sDay").value, n=$("sName").value, p=c.m.people[n];
+  $("sCur").innerHTML = p ? `${c.m.month}/${d} ${n} 目前班別：<b>${esc(shown(p, c.cells[n][d]))}</b>` : "";
+  $("lBtn").textContent = isLocked($("lDay").value) ? "解除鎖定" : "鎖定";
+}
+async function admPost(body, okText){
+  $("admMsg").className="msg"; $("admMsg").textContent="處理中…";
+  try{
+    const j = await fetch(API, { method:"POST", body: JSON.stringify(Object.assign({ k:S.key, pw:S.pw, by:S.user, month:S.mk }, body)) }).then(r=>r.json());
+    if(!j.ok) throw new Error(j.msg||"失敗，請稍後再試一次。");
+    $("admMsg").className="msg ok"; $("admMsg").textContent=okText; await load(); renderAll();
+  }catch(e){ $("admMsg").className="msg err"; $("admMsg").textContent = /Failed to fetch|NetworkError|JSON/.test(e.message) ? "連不上，請檢查網路後再試。" : e.message; }
 }
 function showCur(){
   const c = current(); if(!c) return;
@@ -414,35 +480,57 @@ function showCur(){
   }
   $("confirmBox").hidden = true;
 }
-function doLogin(){
-  if($("pw").value !== S.key){ $("loginMsg").className="msg err"; $("loginMsg").textContent="密碼不對，請再輸入一次。"; return; }
-  S.user = $("who").value; $("whoName").textContent = S.user;
-  $("aName").innerHTML = `<option value="${S.user}">${S.user}</option>`; $("bName").value = S.user;
+async function doLogin(){
+  const pw = $("pw").value.trim(); if(!pw) return;
+  $("loginBtn").disabled = true; $("loginMsg").className="msg"; $("loginMsg").textContent="登入中…";
+  let j = null;
+  try{ j = await fetch(API, { method:"POST", body: JSON.stringify({ k:S.key, action:"login", pw }) }).then(r=>r.json()); }catch(e){}
+  $("loginBtn").disabled = false;
+  if(!j || !j.ok){ $("loginMsg").className="msg err"; $("loginMsg").textContent = j ? (j.msg||"密碼不對，請再輸入一次。") : "連不上，請檢查網路後再試。"; return; }
+  S.pw = pw; S.admin = !!j.admin; $("admTag").hidden = !S.admin; $("admBox").hidden = !S.admin;
+  $("aName").disabled = !S.admin;
+  S.user = $("who").value; $("whoName").textContent = S.user; S.histMsg = null; renderHist();
+  fillSelectors(); $("aName").value = S.user; $("bName").value = S.user; renderHist();
   $("loginBox").hidden = true; $("swapBox").hidden = false; $("pw").value=""; $("loginMsg").textContent="";
   if(S.sel){ $("aDay").value = S.sel; $("bDay").value = S.sel; showCur(); }
 }
+function ruleCheck(c, a, b){
+  const pa = c.m.people[a.name], pb = c.m.people[b.name];
+  if(!pa || !pb) return "找不到這位同仁。";
+  if(a.day===b.day && a.name===b.name) return "兩格是同一天同一人，請換一格。";
+  if(S.admin) return "";
+  if(isLocked(a.day) || isLocked(b.day)) return "這一天已被管理者鎖定，不能調班。";
+  if(pa.kind!==pb.kind) return "副理和組長的班不能互調。";
+  if(a.name!==b.name && a.day!==b.day) return "跟別人調班只能同一天互換，否則你會在對方那天多一個班。要跨天換班，請分兩次、每次同一天對調。";
+  const ra = c.cells[a.name][a.day]||"", rb = c.cells[b.name][b.day]||"";
+  const ia = info(pa, ra), ib = info(pb, rb);
+  if(ia.off && ib.off) return "兩格都是休假，不需要對調。";
+  if(shown(pa,ra)===shown(pb,rb)) return "兩格班別一樣，對調沒有變化。";
+  return "";
+}
 function askSave(){
   const c = current(); const a={day:$("aDay").value,name:$("aName").value}, b={day:$("bDay").value,name:$("bName").value};
-  if(a.name!==S.user){ msg("只能調整自己的班。","err"); return; }
-  if(a.day===b.day && a.name===b.name){ msg("兩格是同一天同一人，請換一格。","err"); return; }
+  if(!S.admin && a.name!==S.user){ msg("只能調整自己的班。","err"); return; }
+  const why = ruleCheck(c, a, b);
+  if(why){ msg(why,"err"); $("confirmBox").hidden = true; return; }
   const va = shown(c.m.people[a.name], c.cells[a.name][a.day]), vb = shown(c.m.people[b.name], c.cells[b.name][b.day]);
   $("confirmText").innerHTML = `把 <b>${c.m.month}/${a.day} ${a.name}「${esc(va)}」</b> 和 <b>${c.m.month}/${b.day} ${b.name}「${esc(vb)}」</b> 對調？`;
   $("confirmBox").hidden = false; msg("");
 }
 async function doSave(){
   const c = current(); if(!c || !S.user) return;
-  if($("aName").value!==S.user){ msg("只能調整自己的班。","err"); return; }
+  if(!S.admin && $("aName").value!==S.user){ msg("只能調整自己的班。","err"); return; }
   const a={day:$("aDay").value,name:$("aName").value}, b={day:$("bDay").value,name:$("bName").value};
   const swap = { month:S.mk, by:S.user, a:{...a, before:c.cells[a.name][a.day]||""}, b:{...b, before:c.cells[b.name][b.day]||""} };
   $("yesBtn").disabled = true; msg("存檔中…");
   try{
-    const r = await fetch(API, { method:"POST", body: JSON.stringify({ k:S.key, swap }) });
+    const r = await fetch(API, { method:"POST", body: JSON.stringify({ k:S.key, pw:S.pw, swap }) });
     const j = await r.json();
-    if(!j.ok) throw new Error(j.err||"fail");
+    if(!j.ok) throw new Error(j.msg||"存檔失敗，請稍後再試一次。");
     $("confirmBox").hidden = true; msg("已存檔，所有人看到的班表都已更新。","ok");
     await load();
   }catch(e){
-    msg(e.message==="self" ? "只能調整自己的班。" : "存檔失敗，請檢查網路後再試一次。","err");
+    msg(/Failed to fetch|NetworkError|JSON/.test(e.message) ? "存檔失敗，請檢查網路後再試一次。" : e.message,"err");
   }finally{ $("yesBtn").disabled = false; }
 }
 function msg(t,k){ $("swapMsg").className = "msg " + (k||""); $("swapMsg").textContent = t; }
@@ -465,6 +553,7 @@ async function load(){
   if(!j.ok){ if(j.err==="auth"){ ls.set("roster_key",""); showGate("密碼不對，請重新輸入。"); } return false; }
   S.months = j.months || {};
   S.allSwaps = (j.swaps||[]).sort((x,y)=>String(x.at).localeCompare(String(y.at)));
+  const lk = JSON.stringify(j.locks||[]); const lockChanged = lk !== JSON.stringify(S.locks||[]); S.locks = j.locks||[];
   const keys = Object.keys(S.months).sort();
   const sel = $("monthSel");
   const opts = keys.map(k=>`<option value="${k}">${esc(S.months[k].label||k)}</option>`).join("");
@@ -478,7 +567,7 @@ async function load(){
   } else {
     const before = JSON.stringify(S.swaps);
     S.swaps = S.allSwaps.filter(x=>x.month===S.mk);
-    if(JSON.stringify(S.swaps)!==before) { renderGrid(); renderDetail(); renderHist(); showCur(); }
+    if(JSON.stringify(S.swaps)!==before || lockChanged) { renderGrid(); renderDetail(); renderHist(); showCur(); showAdm(); }
   }
   $("live").hidden = true;
   return true;
@@ -498,7 +587,12 @@ function startPoll(){
   pollT = setInterval(()=>{ if(!document.hidden) load().catch(()=>liveErr("網路中斷，稍後自動重試")); }, 30000);
   document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) load().catch(()=>{}); });
 }
+function renderVersions(){
+  $("verNow").textContent = `目前 v${VERSIONS[0].v}`; $("verFoot").textContent = `v${VERSIONS[0].v}`;
+  $("verList").innerHTML = VERSIONS.map(x=>`<li><div class="meta"><span class="who">v${x.v}</span><time>${x.d}</time></div><div>${x.items.map(i=>"・"+esc(i)).join("<br>")}</div></li>`).join("");
+}
 async function boot(){
+  renderVersions();
   S.allSwaps = [];
   $("gateBtn").addEventListener("click", enter);
   $("gpw").addEventListener("keydown", e=>{ if(e.key==="Enter") enter(); });
@@ -515,9 +609,18 @@ $("grid").addEventListener("click", e=>{
 $("monthSel").addEventListener("change", e=>setMonth(e.target.value));
 $("loginBtn").addEventListener("click", doLogin);
 $("pw").addEventListener("keydown", e=>{ if(e.key==="Enter") doLogin(); });
-$("logoutBtn").addEventListener("click", ()=>{ S.user=null; $("aName").innerHTML=""; $("swapBox").hidden=true; $("loginBox").hidden=false; msg(""); });
+$("logoutBtn").addEventListener("click", ()=>{ S.user=null; S.admin=false; S.pw=""; $("admTag").hidden=true; $("admBox").hidden=true; $("aName").disabled=true; S.delAt=null; $("aName").innerHTML=""; renderHist(); $("swapBox").hidden=true; $("loginBox").hidden=false; msg(""); });
 for(const id of ["aDay","aName","bDay","bName"]) $(id).addEventListener("change", showCur);
 $("saveBtn").addEventListener("click", askSave);
+for(const id of ["sDay","sName","lDay"]) $(id).addEventListener("change", showAdm);
+$("sBtn").addEventListener("click", ()=>{ const v=$("sVal").value.trim(); admPost({ action:"set", day:$("sDay").value, name:$("sName").value, value:v }, `已把 ${S.months[S.mk].month}/${$("sDay").value} ${$("sName").value} 改成「${v||"（原本班別）"}」。`).then(()=>{ $("sVal").value=""; }); });
+$("lBtn").addEventListener("click", ()=>{ const d=$("lDay").value, on=!isLocked(d); admPost({ action:"lock", day:d, on }, on?`已鎖定 ${S.months[S.mk].month}/${d}。`:`已解除 ${S.months[S.mk].month}/${d} 的鎖定。`); });
+$("hist").addEventListener("click", e=>{
+  const d = e.target.closest(".del"), y = e.target.closest("[data-yes]"), n = e.target.closest("[data-no]");
+  if(d){ S.delAt = d.dataset.at; S.histMsg = null; renderHist(); }
+  else if(y){ delSwap(y.dataset.yes); }
+  else if(n){ S.delAt = null; renderHist(); }
+});
 $("yesBtn").addEventListener("click", doSave);
 $("noBtn").addEventListener("click", ()=>{ $("confirmBox").hidden = true; });
 function openCall(n){
