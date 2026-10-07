@@ -87,7 +87,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .phase h3{display:flex;align-items:center;gap:8px;margin:0 0 4px;font-size:18px;font-weight:900;padding-bottom:6px;border-bottom:3px solid}
 .phase.p1 h3{color:var(--navy);border-color:var(--navy)} .phase.p2 h3{color:#8A6418;border-color:var(--gold)}
 .phase h3 i{width:10px;height:10px;border-radius:50%;background:currentColor}
-.pl{display:grid;grid-template-columns:auto minmax(0,1fr) 1.1em;gap:8px;align-items:center;padding:6px 2px;border-bottom:1px solid var(--line)}
+.pl{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 2px;border-bottom:1px solid var(--line)}
 .pl:last-child{border-bottom:0}
 .pl .pn{min-width:0;display:flex;flex-direction:column}
 .pl .pn small{font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -140,7 +140,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .pill.l9{background:#2A1260;color:#FFFFFF}
 .pill.oth{background:var(--goldbg);color:#8A6418}
 .pill.off{background:transparent;color:var(--off);border:1px dashed var(--off);font-family:var(--sans);font-weight:500}
-.star{color:var(--gold);font-size:17px;text-align:center}
+.star{color:#8A6418;font-size:12px;font-weight:700;font-family:var(--mono);text-align:center;white-space:nowrap}
 .row.isoff .nm,.row.isoff .gp{color:var(--off)}
 .grp{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#8A6418;margin:12px 0 4px}
 .grp::after{content:"";flex:1;height:1px;background:var(--line)}
@@ -317,6 +317,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"1.5", d:"2026-10-07", items:[ "值星標示由星號改為「(FD)」" ]},
   { v:"1.4", d:"2026-10-07", items:[
     "依班表「區」代碼分類：Y 開頭＝一期、S 開頭＝二期；SA／YA／YB＝入境，SD／YN／YS＝出境",
     "每期再分「入境・日班／入境・夜班／出境・日班／出境・夜班」，名字下方標組別（一組／二組／三組，沒有就不顯示）",
@@ -418,7 +419,7 @@ const ICON_BADGE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" s
 const isMain = i => i.work && (i.shift==="K6" || i.shift==="L2");
 const badgeCls = i => i.off ? "off" : i.fd ? "fd" : i.l9 ? "l9" : isMain(i) ? "w" : "oth";
 function personLine(n, i, sub){
-  return `<div class="pl${i.off?" isoff":""}"><span class="bd ${badgeCls(i)}">${esc(i.shift||"休")}</span><span class="pn"><button type="button" class="call" data-n="${esc(n)}">${n}</button>${sub?`<small>${sub}</small>`:""}</span><span class="star">${i.fd&&!i.off?"★":""}</span></div>`;
+  return `<div class="pl${i.off?" isoff":""}"><span class="bd ${badgeCls(i)}">${esc(i.shift||"休")}</span><span class="pn"><button type="button" class="call" data-n="${esc(n)}">${n}</button>${sub?`<small>${sub}</small>`:""}</span><span class="star">${i.fd&&!i.off?"(FD)":""}</span></div>`;
 }
 /* 「區」代碼解讀：Y＝一期、S＝二期；SA／YA／YB＝入境，SD／YN／YS（菸酒）＝出境；
    代碼裡的 一／二／三 是組別（沒有就不顯示）；日＝日班、夜＝夜班（沒寫就依原班別 K6＝日班、L2＝夜班） */
@@ -457,7 +458,7 @@ function renderDetail(){
     h += `<div class="fallback">兩位副理今天都沒班，當日主管：<b>L2</b> ${found.L2.join("、")||"無"}　<b>K6</b> ${found.K6.join("、")||"無"}</div>`;
   }
   // 一期｜二期
-  h += `<div class="hint" style="margin:12px 0 6px">★＝值星（FD）　點名字可撥打電話</div><div class="phases">`;
+  h += `<div class="hint" style="margin:12px 0 6px">(FD)＝值星　點名字可撥打電話</div><div class="phases">`;
   for(const ph of ["一期","二期"]){
     const names = m.order.filter(n=>m.people[n]?.kind==="lead" && area(m.people[n]).phase===ph);
     if(!names.length) continue;
@@ -475,7 +476,7 @@ function renderDetail(){
   box.innerHTML = h;
 }
 function fmtTime(iso){ const t=new Date(iso); if(isNaN(t)) return ""; const p=x=>String(x).padStart(2,"0"); return `${t.getMonth()+1}/${t.getDate()} ${p(t.getHours())}:${p(t.getMinutes())}`; }
-function shown(p, v){ const i = info(p, v); return i.off ? (i.shift||"休") : (i.shift + (i.fd?"★":"")); }
+function shown(p, v){ const i = info(p, v); return i.off ? (i.shift||"休") : (i.shift + (i.fd?"(FD)":"")); }
 function renderHist(){
   const m = S.months[S.mk]; const ul = $("hist");
   const list = [...S.swaps].reverse();
