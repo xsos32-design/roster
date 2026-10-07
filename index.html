@@ -317,6 +317,10 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"1.4", d:"2026-10-07", items:[
+    "依班表「區」代碼分類：Y 開頭＝一期、S 開頭＝二期；SA／YA／YB＝入境，SD／YN／YS＝出境",
+    "每期再分「入境・日班／入境・夜班／出境・日班／出境・夜班」，名字下方標組別（一組／二組／三組，沒有就不顯示）",
+    "林伯聲改依班表 SD菸三-夜 歸在二期出境夜班" ]},
   { v:"1.3", d:"2026-10-07", items:[
     "加入班表上所有人：主管 6 位、一期組長 16 位（早班／晚班）、二期組長 14 位",
     "點日期後改成「一期｜二期」左右兩欄，班別代號在左、名字在右，一眼看出誰有上班",
@@ -416,6 +420,19 @@ const badgeCls = i => i.off ? "off" : i.fd ? "fd" : i.l9 ? "l9" : isMain(i) ? "w
 function personLine(n, i, sub){
   return `<div class="pl${i.off?" isoff":""}"><span class="bd ${badgeCls(i)}">${esc(i.shift||"休")}</span><span class="pn"><button type="button" class="call" data-n="${esc(n)}">${n}</button>${sub?`<small>${sub}</small>`:""}</span><span class="star">${i.fd&&!i.off?"★":""}</span></div>`;
 }
+/* 「區」代碼解讀：Y＝一期、S＝二期；SA／YA／YB＝入境，SD／YN／YS（菸酒）＝出境；
+   代碼裡的 一／二／三 是組別（沒有就不顯示）；日＝日班、夜＝夜班（沒寫就依原班別 K6＝日班、L2＝夜班） */
+const GROUPS = ["入境日班","入境夜班","出境日班","出境夜班"];
+function area(p){
+  const post = String(p.post||"").replace(/\s+/g,"");
+  const phase = /^Y/i.test(post) ? "一期" : (/^S/i.test(post) || /菸|酒/.test(post)) ? "二期" : (p.phase||"");
+  const zone = /^(SA|YA|YB)/i.test(post) ? "入境" : "出境";
+  const rest = post.replace(/^[A-Z]+/i,"").replace(/[菸酒]/g,"");
+  const t = (rest.match(/^-?([一ㄧ二三四])/)||[])[1];
+  const team = t ? (t==="ㄧ"?"一":t)+"組" : "";
+  const shift = /夜/.test(post) ? "夜班" : /日/.test(post) ? "日班" : (p.def==="L2" ? "夜班" : "日班");
+  return { phase, zone, team, shift, group: zone+shift, label:[phase+zone, team, shift].filter(Boolean).join("・") };
+}
 function renderDetail(){
   const c = current(); const box = $("detail");
   if(!c || !S.sel){ box.innerHTML = '<div class="empty-state">點月曆上的日期，看當天班別。</div>'; return; }
@@ -442,15 +459,15 @@ function renderDetail(){
   // 一期｜二期
   h += `<div class="hint" style="margin:12px 0 6px">★＝值星（FD）　點名字可撥打電話</div><div class="phases">`;
   for(const ph of ["一期","二期"]){
-    const names = m.order.filter(n=>m.people[n]?.kind==="lead" && m.people[n].phase===ph);
+    const names = m.order.filter(n=>m.people[n]?.kind==="lead" && area(m.people[n]).phase===ph);
     if(!names.length) continue;
-    const groups = []; names.forEach(n=>{ const g=m.people[n].group; if(!groups.includes(g)) groups.push(g); });
+    const groups = GROUPS.filter(g=>names.some(n=>area(m.people[n]).group===g));
     h += `<section class="phase ${ph==="一期"?"p1":"p2"}"><h3><i></i>${ph}</h3>`;
     for(const g of groups){
-      const ppl = names.filter(n=>m.people[n].group===g).map(n=>({n, p:m.people[n], i:info(m.people[n], cells[n][d])}));
+      const ppl = names.filter(n=>area(m.people[n]).group===g).map(n=>({n, p:m.people[n], i:info(m.people[n], cells[n][d])}));
       const ordered = [...ppl.filter(x=>isMain(x.i)), ...ppl.filter(x=>!isMain(x.i))];
-      h += `<div class="grp">${esc(g)}</div>`;
-      for(const {n,p,i} of ordered) h += personLine(n, i, esc([ph==="一期"?p.post:"", i.note].filter(Boolean).join("・")));
+      h += `<div class="grp">${esc(g.slice(0,2)+"・"+g.slice(2))}</div>`;
+      for(const {n,p,i} of ordered) h += personLine(n, i, esc([area(p).team, i.note].filter(Boolean).join("・")));
     }
     h += `</section>`;
   }
