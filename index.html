@@ -92,6 +92,13 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .pl{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 2px;border-bottom:1px solid var(--line)}
 .pl:last-child{border-bottom:0}
 .pl .pn{min-width:0;display:flex;flex-direction:column}
+.pl .nmr{display:flex;align-items:center;gap:6px;min-width:0;overflow:hidden}
+.pl .nmr .call{flex:none;overflow:visible}
+@media (max-width:520px){.pl .nmr{gap:3px}.pl .ac{font-size:9.5px;padding:0 3px}.star{font-size:10px}.pl{grid-template-columns:auto minmax(0,1fr) auto;gap:4px}}
+.pl .ac{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--navy);background:var(--nightbg);border-radius:5px;padding:0 5px;line-height:1.6;flex:none}
+.phase.p2 .pl .ac{color:#8A6418;background:var(--goldbg)}
+.pl.isoff .ac{color:var(--off);background:var(--soft)}
+.grp.off{color:var(--off)}
 .pl .pn small{font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .pl .call{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
 .pl.isoff .call{color:var(--off)}
@@ -319,6 +326,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"1.8", d:"2026-10-07", items:[ "名字旁顯示區域代號（YA／YB／YN／YS／SA／SD）", "休假的人統一移到各期最下方的「休假」區" ]},
   { v:"1.7", d:"2026-10-07", items:[ "主畫面／書籤小圖示改為「營三部 班表」字樣，主畫面名稱改為「營三部班表」" ]},
   { v:"1.6", d:"2026-10-07", items:[ "加入主畫面／書籤小圖示" ]},
   { v:"1.5", d:"2026-10-07", items:[ "值星標示由星號改為「(FD)」" ]},
@@ -422,8 +430,8 @@ function renderGrid(){
 const ICON_BADGE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>';
 const isMain = i => i.work && (i.shift==="K6" || i.shift==="L2");
 const badgeCls = i => i.off ? "off" : i.fd ? "fd" : i.l9 ? "l9" : isMain(i) ? "w" : "oth";
-function personLine(n, i, sub){
-  return `<div class="pl${i.off?" isoff":""}"><span class="bd ${badgeCls(i)}">${esc(i.shift||"休")}</span><span class="pn"><button type="button" class="call" data-n="${esc(n)}">${n}</button>${sub?`<small>${sub}</small>`:""}</span><span class="star">${i.fd&&!i.off?"(FD)":""}</span></div>`;
+function personLine(n, i, sub, code){
+  return `<div class="pl${i.off?" isoff":""}"><span class="bd ${badgeCls(i)}">${esc(i.shift||"休")}</span><span class="pn"><span class="nmr"><button type="button" class="call" data-n="${esc(n)}">${n}</button>${code?`<span class="ac">${esc(code)}</span>`:""}</span>${sub?`<small>${sub}</small>`:""}</span><span class="star">${i.fd&&!i.off?"(FD)":""}</span></div>`;
 }
 /* 「區」代碼解讀：Y＝一期、S＝二期；SA／YA／YB＝入境，SD／YN／YS（菸酒）＝出境；
    代碼裡的 一／二／三 是組別（沒有就不顯示）；日＝日班、夜＝夜班（沒寫就依原班別 K6＝日班、L2＝夜班） */
@@ -436,7 +444,8 @@ function area(p){
   const t = (rest.match(/^-?([一ㄧ二三四])/)||[])[1];
   const team = t ? (t==="ㄧ"?"一":t)+"組" : "";
   const shift = /夜/.test(post) ? "夜班" : /日/.test(post) ? "日班" : (p.def==="L2" ? "夜班" : "日班");
-  return { phase, zone, team, shift, group: zone+shift, label:[phase+zone, team, shift].filter(Boolean).join("・") };
+  const code = ((post.match(/^(SA|SD|YA|YB|YN|YS)/i)||[])[1] || (/菸|酒/.test(post) ? "SD" : "")).toUpperCase();
+  return { phase, zone, team, shift, code, group: zone+shift, label:[phase+zone, team, shift].filter(Boolean).join("・") };
 }
 function renderDetail(){
   const c = current(); const box = $("detail");
@@ -468,11 +477,18 @@ function renderDetail(){
     if(!names.length) continue;
     const groups = GROUPS.filter(g=>names.some(n=>area(m.people[n]).group===g));
     h += `<section class="phase ${ph==="一期"?"p1":"p2"}"><h3><i></i>${ph}</h3>`;
+    const all = names.map(n=>({n, p:m.people[n], a:area(m.people[n]), i:info(m.people[n], cells[n][d])}));
     for(const g of groups){
-      const ppl = names.filter(n=>area(m.people[n]).group===g).map(n=>({n, p:m.people[n], i:info(m.people[n], cells[n][d])}));
+      const ppl = all.filter(x=>x.a.group===g && !x.i.off);
+      if(!ppl.length) continue;
       const ordered = [...ppl.filter(x=>isMain(x.i)), ...ppl.filter(x=>!isMain(x.i))];
       h += `<div class="grp">${esc(g.slice(0,2)+"・"+g.slice(2))}</div>`;
-      for(const {n,p,i} of ordered) h += personLine(n, i, esc([area(p).team, i.note].filter(Boolean).join("・")));
+      for(const {n,a,i} of ordered) h += personLine(n, i, esc([a.team, i.note].filter(Boolean).join("・")), a.code);
+    }
+    const offs = all.filter(x=>x.i.off);
+    if(offs.length){
+      h += `<div class="grp off">休假<span class="cnt">${offs.length} 人</span></div>`;
+      for(const {n,a,i} of offs) h += personLine(n, i, esc([a.zone+"・"+a.shift, a.team].filter(Boolean).join("・")), a.code);
     }
     h += `</section>`;
   }
