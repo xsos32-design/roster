@@ -227,6 +227,32 @@ details[open].panel>summary::after{content:"收合"}
 .gcard h1{font-size:18px;margin:4px 0 0;color:var(--navy)}
 .foot{text-align:center;font-size:12px;color:var(--mute);padding-top:4px}
 @media (prefers-reduced-motion:no-preference){.day{transition:background .12s,border-color .12s}.hero .plane{animation:fly 9s ease-in-out infinite alternate}@keyframes fly{from{transform:translate(0,0)}to{transform:translate(-14px,6px)}}}
+/* v2.2 粗體大字＋高對比 */
+:root{--ink:#120A24;--mute:#4A4262;--line:#D9CFEC}
+.call{font-weight:900;color:#35107F;text-decoration-thickness:2px}
+.pl .call{font-size:17px;letter-spacing:.02em}
+.pl .pn small{font-size:12px;font-weight:500}
+.pl .ac{font-size:12px;font-weight:700;color:#FFFFFF;background:var(--navy);padding:0 6px;border-radius:6px}
+.quad.zout .pl .ac{color:#FFFFFF;background:#A87A1F}
+.pl.isoff .ac,.quad.zout .pl.isoff .ac{color:var(--mute);background:#ECE7F5}
+.pl.isoff .call{color:#8C84A0}
+.bd{font-size:14.5px;font-weight:700;border-width:2.5px}
+.bd.oth{color:#6E4E10}
+.quad h3{font-size:18px;letter-spacing:.04em}
+.quad .ph{font-size:13px;font-weight:900;color:var(--navy);letter-spacing:.14em;border-bottom:2px solid var(--line)}
+.quad.zout .ph{color:#8A6418}
+.sec{font-size:15.5px;font-weight:900;color:var(--navy)}
+.sec .cnt{font-size:13px;font-weight:700}
+.day .n{font-size:22px;font-weight:600}
+.day .w{font-size:12px;color:var(--ink);font-weight:500}
+.day .hn,.day .td{font-size:11px;font-weight:700}
+.dh .dt{font-size:30px}
+.dh .dw{font-size:18px;font-weight:700;color:var(--ink)}
+.offdet>summary{font-size:15.5px;font-weight:900;color:var(--ink)}
+.offdet>summary .cnt{font-size:13px;font-weight:700;color:var(--mute)}
+.offdet>summary .tg{font-size:13px;font-weight:700}
+.offdet .ph{font-size:13px;font-weight:900;color:var(--ink)}
+@media (max-width:520px){.pl .call{font-size:15.5px;letter-spacing:0}.pl .ac{font-size:10.5px;padding:0 4px}.bd{font-size:13px;border-width:2px}.quad h3{font-size:16px}.day .n{font-size:19px}.day .w{font-size:11px}.day .hn,.day .td{font-size:9.5px}.dh .dt{font-size:25px}.dh .dw{font-size:15px}}
 </style>
 </head>
 <body>
@@ -363,6 +389,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"2.2", d:"2026-10-07", items:[ "整體文字加粗放大、提高對比：名字、班別、區域標籤、日期都更醒目", "區域標籤（YA／SD…）改成實色底白字" ]},
   { v:"2.1", d:"2026-10-07", items:[ "休假的主管（理級等）也移到下方休假區，主管區只列當天有上班的人", "休假名單（主管＋組長）預設收合，點「休假名單」展開", "移除李宇軒（SA）的資料" ]},
   { v:"2.0", d:"2026-10-07", items:[ "休假名單也改成四宮格（入境早班／出境早班／入境晚班／出境晚班），格內再分一期、二期", "每格標題右側顯示人數", "日期列固定在畫面上方，並加上「‹ 前一天／後一天 ›」切換", "手機版頂部橫幅縮小" ]},
   { v:"1.9", d:"2026-10-07", items:[ "點日期後改成四宮格：入境早班｜出境早班／入境晚班｜出境晚班，每格內再分一期、二期", "主管維持在最上方；休假的人集中在四宮格下方的「休假」區", "加上圖例（值星、上班、大夜、休假）與整體版面整理" ]},
