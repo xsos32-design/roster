@@ -361,6 +361,16 @@ html.cyber .gico{box-shadow:0 0 18px rgba(34,230,255,.3)}
 html.cyber .qgrid .quad.qtop{border-radius:6px 6px 0 0} html.cyber .qgrid .quad.qbot{border-radius:0 0 6px 6px}
 .qgrid .quad .none{padding:6px 2px;color:var(--off)}
 @media (max-width:520px){.qgrid{column-gap:6px}}
+/* v3.7 調班：人名・班別 ⇄ 人名・班別 */
+.swapgrid{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:8px;align-items:center}
+.sside{display:grid;gap:6px;border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:10px;min-width:0}
+.sside select{width:100%;min-width:0;padding-inline:6px}
+.slab{font-size:12px;font-weight:700;color:var(--mute);letter-spacing:.08em}
+.scur{display:flex;justify-content:center;align-items:center;min-height:44px}
+.scur .bd{font-size:18px;min-width:4em;padding:6px 10px}
+.sarrow{color:var(--gold);display:flex} .sarrow svg{width:28px;height:28px}
+html.cyber .sside{border-radius:6px} html.cyber .sarrow{color:#F5E43A}
+@media (max-width:520px){.swapgrid{gap:4px}.sside{padding:8px 6px}.sarrow svg{width:22px;height:22px}}
 </style>
 </head>
 <body>
@@ -398,18 +408,12 @@ html.cyber .qgrid .quad.qtop{border-radius:6px 6px 0 0} html.cyber .qgrid .quad.
     </div>
     <div id="swapBox" class="form" hidden>
       <div class="frow" style="justify-content:space-between"><span>已登入：<b id="whoName"></b><span class="adm" id="admTag" hidden>管理者</span></span><button id="logoutBtn">登出</button></div>
-      <div class="slot">
-        <h4>我的班</h4>
-        <div class="frow"><label for="aDay">日期</label><select id="aDay"></select><select id="aName" aria-label="名稱" disabled></select></div>
-        <div class="cur" id="aCur"></div>
+      <div class="swapgrid">
+        <div class="sside"><div class="slab">我的班</div><select id="aName" aria-label="人名" disabled></select><select id="aDay" aria-label="日期"></select><div class="scur" id="aCur"></div></div>
+        <div class="sarrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg></div>
+        <div class="sside"><div class="slab">對調</div><select id="bName" aria-label="人名"></select><select id="bDay" aria-label="日期"></select><div class="scur" id="bCur"></div></div>
       </div>
-      <div class="swapicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg></div>
-      <div class="slot">
-        <h4>跟誰的班對調</h4>
-        <div class="frow"><label for="bDay">日期</label><select id="bDay"></select><select id="bName" aria-label="名稱"></select></div>
-        <div class="cur" id="bCur"></div>
-        <div class="hint">只能調整自己的班。跟別人調班只能同一天互換；自己的班可以選另一天對調（例如休假日和上班日互換）。</div>
-      </div>
+      <div class="hint">右邊選自己＝自己兩天的班對調；選別人＝同一天互換。</div>
       <div class="frow"><button class="primary" id="saveBtn">存檔</button></div>
       <div class="confirm" id="confirmBox" hidden>
         <div id="confirmText"></div>
@@ -456,6 +460,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.7", d:"2026-10-07", items:[ "調班畫面改成「人名・班別 ⇄ 人名・班別」並排", "右邊選自己就是自己兩天對調；選別人時日期自動對齊同一天" ]},
   { v:"3.6", d:"2026-10-07", items:[ "調班登入不用密碼：選名字直接登入，只能調自己的班", "管理者仍需輸入管理者密碼" ]},
   { v:"3.5", d:"2026-10-07", items:[ "分享網址時的簡介改成「營業三部 一期・二期 出入境幹部班表」", "移除舊的輸入密碼畫面" ]},
   { v:"3.4", d:"2026-10-07", items:[ "打開網頁不用再輸入密碼，直接看班表", "調班、管理仍需在設定區登入" ]},
@@ -717,7 +722,7 @@ function showCur(){
   for(const s of ["a","b"]){
     const d = $(s+"Day").value, n = $(s+"Name").value, p = c.m.people[n];
     if(!p){ $(s+"Cur").textContent=""; continue; }
-    $(s+"Cur").innerHTML = `${c.m.month}/${d} ${n} 目前班別：<b>${esc(shown(p, c.cells[n][d]))}</b>`;
+    const raw = c.cells[n][d]; $(s+"Cur").innerHTML = `<span class="bd ${badgeCls(info(p, raw))}">${esc(shown(p, raw))}</span>`;
   }
   $("confirmBox").hidden = true;
 }
@@ -847,6 +852,8 @@ $("loginBtn").addEventListener("click", doLogin);
 $("pw").addEventListener("keydown", e=>{ if(e.key==="Enter") doLogin(); });
 $("logoutBtn").addEventListener("click", ()=>{ S.user=null; S.admin=false; S.pw=""; $("admTag").hidden=true; $("admBox").hidden=true; $("aName").disabled=true; S.delAt=null; $("aName").innerHTML=""; renderHist(); $("swapBox").hidden=true; $("loginBox").hidden=false; msg(""); });
 for(const id of ["aDay","aName","bDay","bName"]) $(id).addEventListener("change", showCur);
+$("bName").addEventListener("change", ()=>{ if($("bName").value !== $("aName").value){ $("bDay").value = $("aDay").value; showCur(); } });
+$("aDay").addEventListener("change", ()=>{ if($("bName").value !== $("aName").value){ $("bDay").value = $("aDay").value; showCur(); } });
 $("saveBtn").addEventListener("click", askSave);
 for(const id of ["sDay","sName","lDay"]) $(id).addEventListener("change", showAdm);
 $("sBtn").addEventListener("click", ()=>{ const v=$("sVal").value.trim(); admPost({ action:"set", day:$("sDay").value, name:$("sName").value, value:v }, `已把 ${S.months[S.mk].month}/${$("sDay").value} ${$("sName").value} 改成「${v||"（原本班別）"}」。`).then(()=>{ $("sVal").value=""; }); });
