@@ -419,8 +419,8 @@ html.cyber .shchips button.on{background:#22E6FF;color:#04121A}
         <div class="sarrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg></div>
         <div class="sside"><div class="slab">換成</div><select id="bName" aria-label="班別或人名"></select><select id="bDay" aria-label="日期"></select><div class="scur" id="bCur"></div></div>
       </div>
-      <div class="shchips" id="shChips"><span class="shl">我這天改成</span><button type="button" data-sh="K6">K6</button><button type="button" data-sh="K8">K8</button><button type="button" data-sh="KA">KA</button><button type="button" data-sh="L0">L0</button><button type="button" data-sh="L2">L2</button><button type="button" data-sh="L4">L4</button><button type="button" data-sh="L9">L9</button></div>
-      <div class="hint">右邊選自己＝自己兩天的班對調；選別人＝同一天互換；按班別按鈕＝直接把左邊這天改成該班別（會先跳出確認）。</div>
+      <div class="shchips" id="shChips"><span class="shl">常用</span><button type="button" data-sh="K6">K6</button><button type="button" data-sh="K8">K8</button><button type="button" data-sh="KA">KA</button><button type="button" data-sh="L0">L0</button><button type="button" data-sh="L2">L2</button><button type="button" data-sh="L4">L4</button><button type="button" data-sh="L9">L9</button><button type="button" data-sh="休">休</button></div>
+      <div class="hint">右邊選自己＝自己兩天的班對調；選別人＝同一天互換；右邊選單最上面是班表上所有班別（含休假），選了就直接把左邊這天改成該班別。</div>
       <div class="frow"><button class="primary" id="saveBtn">存檔</button></div>
       <div class="confirm" id="confirmBox" hidden>
         <div id="confirmText"></div>
@@ -467,6 +467,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.11", d:"2026-10-07", items:[ "右邊「換成」可選班表上出現過的所有班別（K、L、Y 班、本1～本8、國14～16、A、月會…）以及「休」", "修正 KA 沒被當成上班班別的問題" ]},
   { v:"3.10", d:"2026-10-07", items:[ "右邊「換成」選單最上面就是班別 K6、K8、KA、L0、L2、L4、L9，下面才是人名" ]},
   { v:"3.9", d:"2026-10-07", items:[ "調班區加上班別按鈕列「我這天改成 K6 K8 KA L0 L2 L4 L9」，按一下就出現確認" ]},
   { v:"3.8", d:"2026-10-07", items:[ "調班右邊可選「直接改成班別」：K6、K8、KA、L0、L2、L4、L9，把自己當天的班直接改掉（有 FD 會保留）" ]},
@@ -540,11 +541,11 @@ function current(){                         // base cells + swaps replayed in ti
   return { m, cells, touched };
 }
 const isLocked = d => (S.locks||[]).some(l=>l.month===S.mk && String(l.day)===String(d));
-const OFF_RE = /本\s*\d|國\s*\d|國補|國休|^國$|喪|補休|加補|特休|^A$/;
+const OFF_RE = /本\s*\d|國\s*\d|國補|國休|^國$|喪|補休|加補|特休|^A$|^休$/;
 function info(p, raw){
   const v = (raw||"").trim();
   const fd = /FD/i.test(v);
-  const code = ((v.match(/[KL]\d/i)||[])[0]||"").toUpperCase() || (v.match(/Y[A-Z]/)||[])[0] || "";
+  const code = ((v.match(/[KL][\dA]/i)||[])[0]||"").toUpperCase() || (v.match(/Y[A-Z]/)||[])[0] || "";
   const off = !code && OFF_RE.test(v.replace(/FD/ig,"").replace(/\s+/g,"").replace(/(志工|義工)/g,"")) ;
   if (p.kind === "mgr"){
     const work = !!code && !off;
@@ -697,6 +698,14 @@ async function delSwap(at){
 
 /* ---------- settings ---------- */
 const SHIFTS = ["K6","K8","KA","L0","L2","L4","L9"];
+const normSh = v => String(v||"").replace(/FD/ig,"").replace(/(志工|義工)/g,"").replace(/\s+/g,"").trim();
+function allShifts(m){
+  const set = new Set();
+  for(const n of Object.keys(m.people)) for(const v of Object.values(m.people[n].cells||{})){ const x = normSh(v).replace(/^[kly]/, c=>c.toUpperCase()); if(x && x.length<=4 && !SHIFTS.includes(x) && x!=="休") set.add(x); }
+  const rank = x => /^[KLY]/i.test(x) ? 0 : /^本/.test(x) ? 1 : /^國/.test(x) ? 2 : 3;
+  const rest = [...set].sort((a,b)=> rank(a)-rank(b) || a.localeCompare(b,"zh-Hant",{numeric:true}));
+  return [...SHIFTS, "休", ...rest];
+}
 function fillSelectors(){
   const m = S.months[S.mk]; if(!m) return;
   const names = [...VICE, ...m.order];
@@ -711,7 +720,7 @@ function fillSelectors(){
   for(const id of ["sDay","lDay"]){ const k=$(id).value; $(id).innerHTML = dayOpts; if(k) $(id).value=k; }
   { const k=$("sName").value; $("sName").innerHTML = nameOpts; if(k) $("sName").value=k; }
   showAdm();
-  { const k=$("bName").value; $("bName").innerHTML = `<optgroup label="改成班別">${SHIFTS.map(x=>`<option value="@${x}">班別 ${x}</option>`).join("")}</optgroup><optgroup label="跟人對調">${nameOpts}</optgroup>`; if(k) $("bName").value=k; }
+  { const k=$("bName").value; $("bName").innerHTML = `<optgroup label="改成班別">${allShifts(m).map(x=>`<option value="@${esc(x)}">${esc(x)}</option>`).join("")}</optgroup><optgroup label="跟人對調">${nameOpts}</optgroup>`; if(k) $("bName").value=k; }
   showCur();
 }
 function showAdm(){
@@ -771,7 +780,8 @@ function askSave(){
   if(!S.admin && a.name!==S.user){ msg("只能調整自己的班。","err"); return; }
   S.pendingSet = null;
   if(b.name.startsWith("@")){
-    const raw = c.cells[a.name][a.day]||"", nv = b.name.slice(1) + (/FD/i.test(raw) ? " FD" : "");
+    const raw = c.cells[a.name][a.day]||"", tgt = b.name.slice(1), tgtWork = !info(c.m.people[a.name], tgt).off;
+    const nv = tgt + (tgtWork && /FD/i.test(raw) ? " FD" : "");
     if(!S.admin && isLocked(a.day)){ msg("這一天已被管理者鎖定，不能調班。","err"); return; }
     if(shown(c.m.people[a.name], raw).replace(/\s+/g,"") === nv.replace(/\s+/g,"")){ msg("班別沒有變化。","err"); return; }
     S.pendingSet = { day:a.day, name:a.name, value:nv };
