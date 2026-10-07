@@ -467,6 +467,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.12", d:"2026-10-08", items:[ "讀不到班表時自動快速重試（不用等 30 秒）" ]},
   { v:"3.11", d:"2026-10-07", items:[ "右邊「換成」可選班表上出現過的所有班別（K、L、Y 班、本1～本8、國14～16、A、月會…）以及「休」", "修正 KA 沒被當成上班班別的問題" ]},
   { v:"3.10", d:"2026-10-07", items:[ "右邊「換成」選單最上面就是班別 K6、K8、KA、L0、L2、L4、L9，下面才是人名" ]},
   { v:"3.9", d:"2026-10-07", items:[ "調班區加上班別按鈕列「我這天改成 K6 K8 KA L0 L2 L4 L9」，按一下就出現確認" ]},
@@ -869,7 +870,10 @@ async function boot(){
   S.allSwaps = [];
   // v3.4：看班表不需要密碼，直接開啟（調班仍需登入）
   S.key = ls.get("roster_key") || "";
-  try{ await load(); }catch(e){ liveErr("連不上班表資料，稍後自動重試"); }
+  for(let t=0; t<6; t++){
+    try{ await load(); $("live").hidden = true; break; }
+    catch(e){ console.error(e); liveErr(t<5 ? "讀取中，網路較慢請稍候…" : "連不上班表資料，請下拉重新整理"); await new Promise(r=>setTimeout(r, 2500*(t+1))); }
+  }
   startPoll();
 }
 
