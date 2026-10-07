@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
-<script>try{var q=new URLSearchParams(location.search).get("theme");if(q)localStorage.setItem("roster_theme",q);if((q||localStorage.getItem("roster_theme"))==="cyber")document.documentElement.classList.add("cyber");}catch(e){}</script>
+<script>try{var q=new URLSearchParams(location.search).get("theme");if(q)localStorage.setItem("roster_theme",q);if((q||localStorage.getItem("roster_theme")||"cyber")==="cyber")document.documentElement.classList.add("cyber");}catch(e){}</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%230E1116%22/%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%2258%22%20height%3D%2258%22%20rx%3D%2211%22%20fill%3D%22none%22%20stroke%3D%22%23DDB566%22%20stroke-width%3D%223%22/%3E%3Ctext%20x%3D%2232%22%20y%3D%2229%22%20font-size%3D%2217%22%20text-anchor%3D%22middle%22%20fill%3D%22%23DDB566%22%20font-family%3D%22sans-serif%22%20font-weight%3D%22700%22%3E%E7%87%9F%E4%B8%89%E9%83%A8%3C/text%3E%3Ctext%20x%3D%2232%22%20y%3D%2250%22%20font-size%3D%2217%22%20text-anchor%3D%22middle%22%20fill%3D%22%23DDB566%22%20font-family%3D%22sans-serif%22%20font-weight%3D%22700%22%3E%E7%8F%AD%E8%A1%A8%3C/text%3E%3C/svg%3E">
@@ -311,13 +311,20 @@ html.cyber .dh .dt{text-shadow:0 0 12px rgba(34,230,255,.35)}
 html.cyber .dh .dt.red{text-shadow:0 0 12px rgba(255,61,110,.5)}
 @media (max-width:520px){html.cyber .hero::before{top:auto;bottom:8px;right:10px;font-size:8px;letter-spacing:.12em}.bd{min-width:2.9em;padding:3px 3px}.star{font-size:9.5px;letter-spacing:-.03em}.pl{gap:4px}}
 @media (max-width:420px){.pl .call{font-size:15px}.pl .nmr{flex-wrap:wrap;row-gap:1px}}
+/* v3.0 賽博版預設、照片橫幅（Unsplash：Tsukada Kazuhiro）、Lucide 圖示 */
+html.cyber .hero{background:linear-gradient(90deg,rgba(7,6,15,.94) 0%,rgba(7,6,15,.6) 45%,rgba(7,6,15,.1) 100%),linear-gradient(180deg,rgba(255,43,214,.10),rgba(34,230,255,.08)),repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px),url("https://images.unsplash.com/photo-1664188578262-08c57ebf69ae?auto=format&fit=crop&q=70&w=1600") center 62%/cover no-repeat,#07060F}
+html.cyber .hero,html.cyber .hero .txt{min-height:168px}
+@media (max-width:520px){html.cyber .hero{background-image:linear-gradient(90deg,rgba(7,6,15,.9) 0%,rgba(7,6,15,.45) 70%,rgba(7,6,15,.2) 100%),repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px),url("https://images.unsplash.com/photo-1664188578262-08c57ebf69ae?auto=format&fit=crop&q=70&w=900")}html.cyber .hero,html.cyber .hero .txt{min-height:128px}}
+.gimg{width:100%;height:120px;object-fit:cover;border-radius:10px;display:block}
+html.cyber .gimg{border-radius:4px;box-shadow:0 0 18px rgba(34,230,255,.3)}
+.swapicon{color:var(--gold)} .swapicon svg{width:26px;height:26px}
 </style>
 </head>
 <body>
 
 <div class="gate" id="gate" hidden>
   <div class="gcard">
-    <svg viewBox="0 0 120 70" width="120" aria-hidden="true"><rect x="8" y="14" width="104" height="52" rx="10" fill="#EEE6FB"/><rect x="8" y="14" width="104" height="14" rx="7" fill="#4A1E9E"/><g fill="#C2902A"><circle cx="34" cy="44" r="5"/><circle cx="60" cy="44" r="5"/><circle cx="86" cy="44" r="5"/></g><path d="M40 4 L80 4" stroke="#C2902A" stroke-width="3" stroke-linecap="round"/></svg>
+    <img class="gimg" src="https://images.unsplash.com/photo-1664188578262-08c57ebf69ae?auto=format&fit=crop&q=70&w=720" alt="" loading="eager">
     <h1>營三部 · 一、二期出入境班表</h1>
     <p class="hint">請輸入密碼查看班表（這台裝置只要輸入一次）</p>
     <div class="frow" style="justify-content:center"><input id="gpw" type="password" inputmode="numeric" autocomplete="off" aria-label="密碼" style="width:9em;text-align:center"><button class="primary" id="gateBtn">進入</button></div>
@@ -367,12 +374,12 @@ html.cyber .dh .dt.red{text-shadow:0 0 12px rgba(255,61,110,.5)}
   <div class="stripe" aria-hidden="true"></div>
   <div class="main">
     <section class="panel" aria-label="月曆">
-      <h2 class="ptitle" style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="8.5" cy="14.5" r="1" fill="currentColor"/></svg><span id="calTitle">月曆</span></h2>
+      <h2 class="ptitle" style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg><span id="calTitle">月曆</span></h2>
       <div class="dow" id="dow"></div>
       <div class="grid" id="grid"><div class="loading" style="grid-column:1/-1">讀取班表中…</div></div>
       <div class="legend">
         <span><i style="background:var(--badbg);border:1px solid #F3C9C4"></i>國定假日／補假（人事行政總處 115 年辦公日曆表，今年無補班日）</span>
-        <span><i style="background:#FFE27A;border:1px solid #E8B923"></i>今天</span><span><i style="border:2px solid var(--navy)"></i>選取中</span><span class="lkn" style="border:0;background:none;padding:0"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>鎖定（不能調班）</span>
+        <span><i style="background:#FFE27A;border:1px solid #E8B923"></i>今天</span><span><i style="border:2px solid var(--navy)"></i>選取中</span><span class="lkn" style="border:0;background:none;padding:0"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>鎖定（不能調班）</span>
         <span><i style="background:var(--navy);border-radius:3px;width:22px;height:10px"></i>部門行程</span>
       </div>
     </section>
@@ -381,7 +388,7 @@ html.cyber .dh .dt.red{text-shadow:0 0 12px rgba(255,61,110,.5)}
   </div>
 
   <details class="panel" id="setBox">
-    <summary style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.4" fill="currentColor"/></svg>設定區 · 調班</summary>
+    <summary style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>設定區 · 調班</summary>
     <div id="loginBox" class="form">
       <div class="frow"><label for="who">登入名稱</label><select id="who"></select></div>
       <div class="frow"><label for="pw">密碼</label><input id="pw" type="password" inputmode="numeric" autocomplete="off" style="width:9em"><button class="primary" id="loginBtn">登入</button></div>
@@ -394,7 +401,7 @@ html.cyber .dh .dt.red{text-shadow:0 0 12px rgba(255,61,110,.5)}
         <div class="frow"><label for="aDay">日期</label><select id="aDay"></select><select id="aName" aria-label="名稱" disabled></select></div>
         <div class="cur" id="aCur"></div>
       </div>
-      <div class="swapicon"><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="#FBF1DC"/><path d="M10 7v13M10 20l-3-3M10 20l3-3M18 21V8M18 8l-3 3M18 8l3 3" stroke="#B8862B" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="swapicon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m21 16-4 4-4-4"/><path d="M17 20V4"/><path d="m3 8 4-4 4 4"/><path d="M7 4v16"/></svg></div>
       <div class="slot">
         <h4>跟誰的班對調</h4>
         <div class="frow"><label for="bDay">日期</label><select id="bDay"></select><select id="bName" aria-label="名稱"></select></div>
@@ -419,14 +426,14 @@ html.cyber .dh .dt.red{text-shadow:0 0 12px rgba(255,61,110,.5)}
   </details>
 
   <section class="panel">
-    <h2 class="ptitle" style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>歷史更改紀錄<span class="hint" id="histCount" style="margin-left:auto;font-weight:500"></span></h2>
+    <h2 class="ptitle" style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>歷史更改紀錄<span class="hint" id="histCount" style="margin-left:auto;font-weight:500"></span></h2>
     <ul class="hist" id="hist"><li class="empty-state">這個月還沒有人調班。</li></ul>
   </section>
   <details class="panel" id="verBox">
-    <summary style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 4h12l4 4v12H4z"/><path d="M8 10h8M8 14h8M8 18h5"/></svg>版本更新紀錄<span class="hint" id="verNow" style="margin-left:6px;font-weight:500"></span></summary>
+    <summary style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8M16 13H8M16 17H8"/></svg>版本更新紀錄<span class="hint" id="verNow" style="margin-left:6px;font-weight:500"></span></summary>
     <ul class="hist" id="verList"></ul>
   </details>
-  <div class="foot">班表來源：營三部幹部班表 · 調班存檔後所有人看到的班表同步更新（每 30 秒自動更新） · <span id="verFoot"></span></div>
+  <div class="foot">班表來源：營三部幹部班表 · 調班存檔後所有人看到的班表同步更新（每 30 秒自動更新） · <span id="verFoot"></span><br>橫幅照片：Tsukada Kazuhiro／Unsplash · 圖示：Lucide</div>
 </div>
 
 <div class="sheet-bg" id="sheet" hidden>
@@ -434,7 +441,7 @@ html.cyber .dh .dt.red{text-shadow:0 0 12px rgba(255,61,110,.5)}
     <div class="who"><span class="av" id="shAv"></span><div><b id="shName"></b><span class="hint" id="shSub"></span></div></div>
     <div class="num" id="shNum"></div>
     <div class="acts">
-      <a class="dial" id="shDial" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>撥打</a>
+      <a class="dial" id="shDial" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>撥打</a>
       <button type="button" id="shCopy">複製號碼</button>
     </div>
     <div class="hint" id="shMsg">若按「撥打」沒有反應，請複製號碼後撥打。</div>
@@ -447,6 +454,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.0", d:"2026-10-07", items:[ "賽博風格改為預設（要原本樣式可用 ?theme=light）", "「主管」改稱「理級」，排序：協理 → 經理 → 副理 → 其他理級", "橫幅和登入頁改用 Unsplash 開源照片（攝影：Tsukada Kazuhiro），圖示換成 Lucide 開源圖示" ]},
   { v:"2.3", d:"2026-10-07", items:[ "新增賽博風格（試用）：網址加 ?theme=cyber 開啟，會記住；加 ?theme=light 換回原本樣式" ]},
   { v:"2.2", d:"2026-10-07", items:[ "整體文字加粗放大、提高對比：名字、班別、區域標籤、日期都更醒目", "區域標籤（YA／SD…）改成實色底白字" ]},
   { v:"2.1", d:"2026-10-07", items:[ "休假的主管（理級等）也移到下方休假區，主管區只列當天有上班的人", "休假名單（主管＋組長）預設收合，點「休假名單」展開", "移除李宇軒（SA）的資料" ]},
@@ -548,12 +556,12 @@ function renderGrid(){
     if(note && note!==hs) lab += `<span class="ev">${esc(note)}</span>`;
     if(today) lab += `<span class="td">今天</span>`;
     h += `<button class="day${hol&&!isWork?" hol":""}${isWork?" mk":""}${today?" today":""}${S.sel===d?" sel":""}" data-d="${d}" aria-label="${m.month}月${d}日 週${WD[w]}${hol?" "+hol:""}">
-      ${isLocked(d)?`<span class="lkw"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>`:""}<span class="n">${d}</span><span class="w${w===0?" sun":w===6?" sat":""}">${WD[w]}</span>${lab}</button>`;
+      ${isLocked(d)?`<span class="lkw"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></span>`:""}<span class="n">${d}</span><span class="w${w===0?" sun":w===6?" sat":""}">${WD[w]}</span>${lab}</button>`;
   }
   g.innerHTML = h;
 }
 
-const ICON_BADGE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>';
+const ICON_BADGE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z"/><path d="m9 12 2 2 4-4"/></svg>';
 const isMain = i => i.work && (i.shift==="K6" || i.shift==="L2");
 const badgeCls = i => i.off ? "off" : i.fd ? "fd" : i.l9 ? "l9" : isMain(i) ? "w" : "oth";
 function personLine(n, i, sub, code){
@@ -578,11 +586,12 @@ function renderDetail(){
   if(!c || !S.sel){ box.innerHTML = '<div class="empty-state">點月曆上的日期，看當天班別。</div>'; return; }
   const { m, cells } = c; const d = S.sel;
   const wd = WD[dateOf(m,d).getDay()]; const hol = HOL[hk(m,d)]; const note=(m.notes||{})[d]||"";
-  let h = `<div class="dh"><button type="button" class="nav" data-go="-1" aria-label="前一天"${d<=1?" disabled":""}>‹</button><div class="dmid"><span class="dt${hol?" red":""}">${m.month}月${d}日</span><span class="dw">週${wd}</span>${hol?`<span class="tag red">${esc(hol)}</span>`:""}${note?`<span class="tag">${esc(note)}</span>`:""}${isLocked(d)?`<span class="lkn"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>已鎖定・不能調班</span>`:""}</div><button type="button" class="nav" data-go="1" aria-label="後一天"${d>=m.days?" disabled":""}>›</button></div>`;
+  let h = `<div class="dh"><button type="button" class="nav" data-go="-1" aria-label="前一天"${d<=1?" disabled":""}>‹</button><div class="dmid"><span class="dt${hol?" red":""}">${m.month}月${d}日</span><span class="dw">週${wd}</span>${hol?`<span class="tag red">${esc(hol)}</span>`:""}${note?`<span class="tag">${esc(note)}</span>`:""}${isLocked(d)?`<span class="lkn"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>已鎖定・不能調班</span>`:""}</div><button type="button" class="nav" data-go="1" aria-label="後一天"${d>=m.days?" disabled":""}>›</button></div>`;
   // 主管
   const mgrs = m.order.filter(n=>m.people[n]?.kind==="mgr");
-  const mOrder = [...VICE.filter(n=>mgrs.includes(n)), ...mgrs.filter(n=>!VICE.includes(n))];
-  h += `<div class="sec">${ICON_BADGE}主管</div><div class="mgrs">`;
+  const rk = n => { const t = m.people[n].title||""; return t.includes("協理")?0 : t.includes("經理")?1 : VICE.includes(n)?2 : 3; };
+  const mOrder = mgrs.map((n,i)=>[n,i]).sort((a,b)=>rk(a[0])-rk(b[0])||a[1]-b[1]).map(x=>x[0]);
+  h += `<div class="sec">${ICON_BADGE}理級</div><div class="mgrs">`;
   let anyVice = false; const offMgr = [];
   const mgCard = (n, i) => { const p = m.people[n]; const ii = {...i, off: !i.work, shift: i.work ? i.shift : (i.shift||"休")};
     return `<div class="mg${VICE.includes(n)?" vice":""}">${personLine(n, ii, esc((VICE.includes(n)?"副理・":"")+(p.title||"")+(p.area?"・"+p.area:"")))}</div>`; };
@@ -592,7 +601,7 @@ function renderDetail(){
     if(!i.work){ offMgr.push([n,i]); continue; }
     h += mgCard(n, i);
   }
-  if(offMgr.length===mOrder.length) h += `<div class="none" style="padding:8px 2px">今天主管都休假</div>`;
+  if(offMgr.length===mOrder.length) h += `<div class="none" style="padding:8px 2px">今天理級都休假</div>`;
   h += `</div>`;
   if(!anyVice){
     const found = {L2:[],K6:[]};
@@ -602,8 +611,8 @@ function renderDetail(){
   // 入境／出境 × 早班／晚班
   h += `<div class="keys"><span><b class="kfd">(FD)</b>值星</span><span><i class="kb w"></i>上班</span><span><i class="kb l9"></i>大夜 L9</span><span><i class="kb off"></i>休假</span><span>點名字可撥打電話</span></div>`;
   const leads = m.order.filter(n=>m.people[n]?.kind==="lead").map(n=>({n, p:m.people[n], a:area(m.people[n]), i:info(m.people[n], cells[n][d])}));
-  const ICON_MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
-  const ICON_SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
+  const ICON_MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>';
+  const ICON_SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>';
   const QUADS = [["入境日班","入境早班","zin",0],["出境日班","出境早班","zout",0],["入境夜班","入境晚班","zin",1],["出境夜班","出境晚班","zout",1]];
   const quads = (list, off) => {
     let q = `<div class="quads${off?" offq":""}">`;
@@ -625,8 +634,8 @@ function renderDetail(){
   const offs = leads.filter(x=>x.i.off);
   const offN = offs.length + offMgr.length;
   if(offN){
-    h += `<details class="offdet" id="offDet"${S.offOpen?" open":""}><summary><span>休假名單</span><span class="cnt">${offN} 人（主管 ${offMgr.length}・組長 ${offs.length}）</span><span class="tg"></span></summary>`;
-    if(offMgr.length) h += `<div class="ph" style="margin-top:6px">主管</div><div class="mgrs offm">${offMgr.map(([n,i])=>mgCard(n,i)).join("")}</div>`;
+    h += `<details class="offdet" id="offDet"${S.offOpen?" open":""}><summary><span>休假名單</span><span class="cnt">${offN} 人（理級 ${offMgr.length}・組長 ${offs.length}）</span><span class="tg"></span></summary>`;
+    if(offMgr.length) h += `<div class="ph" style="margin-top:6px">理級</div><div class="mgrs offm">${offMgr.map(([n,i])=>mgCard(n,i)).join("")}</div>`;
     if(offs.length) h += `<div class="ph" style="margin-top:10px">組長</div>` + quads(offs, true);
     h += `</details>`;
   }
