@@ -1,0 +1,547 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%230E1116%22/%3E%3Crect%20x%3D%224%22%20y%3D%224%22%20width%3D%2256%22%20height%3D%2256%22%20rx%3D%2211%22%20fill%3D%22none%22%20stroke%3D%22%23DDB566%22%20stroke-width%3D%223%22/%3E%3Ctext%20x%3D%2232%22%20y%3D%2238%22%20font-size%3D%2226%22%20text-anchor%3D%22middle%22%20fill%3D%22%23DDB566%22%20font-family%3D%22sans-serif%22%20font-weight%3D%22700%22%3E%E9%9F%8B%3C/text%3E%3Ctext%20x%3D%2232%22%20y%3D%2253%22%20font-size%3D%229%22%20text-anchor%3D%22middle%22%20fill%3D%22%23DDB566%22%20font-family%3D%22sans-serif%22%3E%E7%8F%AD%E8%A1%A8%3C/text%3E%3C/svg%3E">
+<title>營三部幹部班表</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: sky banner (self-drawn SVG) → month grid left / day roster right (stacks on phone) → settings → history. Single light look by choice. */
+:root{
+  --bg:#F2EEF9; --card:#FFFFFF; --ink:#1E1433; --mute:#6E6585; --line:#E2DAF0; --soft:#F8F5FD;
+  --navy:#4A1E9E; --gold:#C2902A; --goldbg:#FBF2DA; --off:#ABA3BD; --night:#4A1E9E; --nightbg:#EEE6FB; --ok:#2D7F55; --bad:#C8382E; --badbg:#FCEBE9;
+  --sans:"Noto Sans TC",system-ui,-apple-system,"PingFang TC","Microsoft JhengHei",sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{background:var(--bg)}
+body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15px;line-height:1.5;margin:0;min-height:100%}
+.wrap{max-width:1120px;margin:0 auto;padding-inline:16px;padding-block:16px 40px;display:flex;flex-direction:column;gap:16px}
+.hero{position:relative;border-radius:16px;overflow:hidden;background:#3A1585;min-height:132px;box-shadow:0 6px 20px rgba(60,25,130,.18)}
+.hero svg{position:absolute;inset:0;width:100%;height:100%}
+.hero .txt{position:relative;padding:20px 20px 18px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;min-height:132px}
+.hero .k{color:#FFFFFF;font-weight:900;font-size:clamp(18px,4.4vw,26px);letter-spacing:.04em;line-height:1.25;text-shadow:0 1px 8px rgba(10,25,45,.35)}
+.hero .k small{display:table;font-size:12px;font-weight:700;letter-spacing:.16em;color:#2A1260;background:linear-gradient(90deg,#F7DE8F,#D4A23A);padding:2px 10px;border-radius:4px;margin-bottom:6px;transform:skewX(-8deg)}
+.monthbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+#live{color:#FFFFFF;font-size:12px;background:rgba(200,56,46,.85);border-radius:6px;padding:2px 8px}
+.monthbar select{background:rgba(255,255,255,.95);border-color:transparent;font-weight:700}
+select,input,button{font:inherit;color:var(--ink)}
+select,input{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:7px 10px;min-height:40px}
+select:disabled{background:var(--soft);color:var(--ink);opacity:1;font-weight:700}
+button{cursor:pointer;border-radius:10px;border:1px solid var(--line);background:var(--card);padding:7px 14px;min-height:40px}
+button.primary{background:var(--navy);border-color:var(--navy);color:#FFFFFF;font-weight:700}
+button.primary:hover{background:#5B2BBE}
+button:disabled{opacity:.45;cursor:not-allowed}
+:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.main{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:start}
+@media (max-width:860px){.main{grid-template-columns:minmax(0,1fr)}}
+.stripe{height:5px;border-radius:3px;background:linear-gradient(90deg,#E6334A 0 16.6%,#2B7BE4 0 33.3%,#F39A1E 0 50%,#7CC242 0 66.6%,#F3C21E 0 83.3%,#1EB6E6 0)}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0;box-shadow:0 2px 10px rgba(60,25,130,.05)}
+.ptitle{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin:0 0 10px}
+.ptitle svg{width:20px;height:20px;flex:none}
+.dow,.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
+.dow div{font-size:12px;color:var(--mute);text-align:center;padding-bottom:2px;letter-spacing:.1em;font-weight:500}
+.day{appearance:none;text-align:center;border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:6px 3px;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;min-width:0}
+.day:hover{border-color:var(--navy)}
+.day .n{font-family:var(--mono);font-weight:600;font-size:16px;line-height:1.6;min-width:1.9em;border-radius:8px}
+.day .hn{font-size:10.5px;color:var(--bad);line-height:1.2;word-break:break-all;font-weight:500}
+.day.hol{background:var(--badbg);border-color:#F3C9C4}
+.day.hol .n{color:var(--bad)}
+.day.mk .hn{color:var(--mute)}
+.day .ev{font-size:10.5px;line-height:1.2;color:#FFFFFF;background:var(--navy);border-radius:5px;padding:1px 4px;word-break:break-all;max-width:100%}
+.day.today{background:#FFE27A;border-color:#E8B923}
+.day.today .n{color:var(--ink)}
+.day.today.hol .n{color:var(--bad)}
+.day.sel{border-color:var(--navy);box-shadow:0 0 0 2px var(--navy) inset}
+.day.sel:not(.today):not(.hol){background:var(--card)}
+.day.empty{visibility:hidden}
+@media (max-width:520px){.dow,.grid{gap:4px}.day{min-height:50px;padding:4px 1px;border-radius:9px}.day .n{font-size:14px}.day .hn,.day .ev{font-size:9px}.day .ev{padding:1px 2px}}
+.legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mute);margin-top:12px}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{display:inline-block;width:12px;height:12px;border-radius:4px}
+.dhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:12px;margin-bottom:6px;border-bottom:1px solid var(--line)}
+.dhead .cal{width:58px;border-radius:10px;overflow:hidden;border:1px solid var(--line);text-align:center;flex:none}
+.dhead .cal b{display:block;background:var(--navy);color:#FFFFFF;font-size:11px;letter-spacing:.1em;padding:1px 0}
+.dhead .cal span{display:block;font-family:var(--mono);font-size:24px;font-weight:600;line-height:1.45}
+.dhead.h .cal b{background:var(--bad)} .dhead.h .cal span{color:var(--bad)}
+.dhead .wd{font-size:20px;font-weight:900}
+.dhead .tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;background:var(--goldbg);color:#8A6418;border-radius:999px;padding:2px 10px}
+.tag.red{background:var(--badbg);color:var(--bad)}
+.sec{display:flex;align-items:center;gap:8px;font-size:13px;letter-spacing:.08em;color:var(--navy);margin:14px 0 6px;font-weight:700}
+.sec svg{width:18px;height:18px;flex:none}
+.row,.thead{display:grid;grid-template-columns:30px 4.4em minmax(0,1fr) 4.2em 3.6em;gap:8px;align-items:center;padding:6px 4px;border-radius:10px}
+.row:nth-child(even){background:var(--soft)}
+.row .pill{justify-self:center}
+.thead{position:sticky;top:env(safe-area-inset-top,0px);z-index:2;background:var(--navy);color:#FFFFFF;border-radius:10px;padding:6px 4px;font-size:12px;font-weight:700;letter-spacing:.06em;margin:8px 0 2px}
+.thead span{text-align:left}
+.thead .c{text-align:center;white-space:nowrap;letter-spacing:0}
+.thead .fd{color:#F3D99B}
+.av{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-size:13px;font-weight:700;background:var(--nightbg);color:var(--navy)}
+.row.isfd .av{background:var(--gold);color:#FFFFFF}
+.row.isoff .av{background:var(--soft);color:var(--off);border:1px solid var(--line)}
+.row .nm{font-weight:700}
+.call{appearance:none;border:0;background:none;padding:0;min-height:0;text-align:left;font:inherit;font-weight:700;color:var(--navy);text-decoration:underline dotted 1.5px;text-underline-offset:3px;cursor:pointer}
+.row.isoff .call{color:var(--off)}
+.sheet-bg{position:fixed;inset:0;background:rgba(22,35,58,.35);display:flex;align-items:flex-end;justify-content:center;z-index:20;padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom,0px))}
+.sheet{background:var(--card);border-radius:18px;padding:18px;width:min(420px,100%);display:grid;gap:12px;box-shadow:0 10px 30px rgba(22,35,58,.25)}
+.sheet .who{display:flex;align-items:center;gap:12px}
+.sheet .who .av{width:44px;height:44px;font-size:18px}
+.sheet .who b{font-size:18px;display:block}
+.sheet .num{font-family:var(--mono);font-size:22px;font-weight:600;letter-spacing:.04em;user-select:all;text-align:center;background:var(--soft);border-radius:12px;padding:8px}
+.sheet .acts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sheet a.dial{display:flex;align-items:center;justify-content:center;gap:6px;background:var(--ok);color:#FFFFFF;border-radius:10px;font-weight:700;text-decoration:none;min-height:44px}
+.sheet a.dial svg{width:18px;height:18px}
+.row .gp{font-size:12.5px;color:var(--mute);min-width:0}
+.pill{font-family:var(--mono);font-size:13px;font-weight:600;border-radius:7px;padding:2px 9px;text-align:center;min-width:3.4em;white-space:nowrap}
+.pill.w{background:var(--nightbg);color:var(--navy)}
+.pill.fd{background:var(--gold);color:#FFFFFF}
+.pill.l9{background:#2A1260;color:#FFFFFF}
+.pill.oth{background:var(--goldbg);color:#8A6418}
+.pill.off{background:transparent;color:var(--off);border:1px dashed var(--off);font-family:var(--sans);font-weight:500}
+.star{color:var(--gold);font-size:17px;text-align:center}
+.row.isoff .nm,.row.isoff .gp{color:var(--off)}
+.grp{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700;color:#8A6418;margin:12px 0 4px}
+.grp::after{content:"";flex:1;height:1px;background:var(--line)}
+.grp .cnt{font-weight:500;color:var(--mute);font-size:12px}
+.fallback{background:var(--goldbg);border-radius:10px;padding:10px 12px;font-size:13.5px;margin-top:6px}
+.fallback b{font-family:var(--mono)}
+details.panel>summary{cursor:pointer;font-weight:700;list-style:none;display:flex;align-items:center;gap:8px}
+details.panel>summary::-webkit-details-marker{display:none}
+details.panel>summary svg{width:20px;height:20px}
+details.panel>summary::after{content:"展開";margin-left:auto;font-size:12px;color:var(--mute);font-weight:500}
+details[open].panel>summary::after{content:"收合"}
+.form{display:grid;gap:12px;margin-top:14px}
+.frow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.frow label{font-size:13px;color:var(--mute);min-width:4.5em}
+.slot{border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:12px;display:grid;gap:8px}
+.slot h4{margin:0;font-size:13px;color:var(--navy);letter-spacing:.06em}
+.cur{font-size:13.5px}
+.cur b{font-family:var(--mono)}
+.swapicon{display:flex;justify-content:center}
+.swapicon svg{width:28px;height:28px}
+.hint{font-size:12.5px;color:var(--mute)}
+.msg{font-size:13px;min-height:1.2em}
+.msg.err{color:var(--bad)} .msg.ok{color:var(--ok)}
+.confirm{background:var(--goldbg);border-radius:10px;padding:12px;display:grid;gap:8px;font-size:14px}
+.hist{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:8px;max-height:440px;overflow:auto}
+.hist li{padding:10px 12px;border-radius:10px;background:var(--soft);font-size:13.5px;display:grid;gap:2px}
+.hist .meta{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--mute)}
+.hist time{font-family:var(--mono)}
+.hist .who{font-weight:700;color:var(--navy)}
+.empty-state{color:var(--mute);font-size:13.5px;padding:10px 0}
+.empty-art{display:grid;justify-items:center;gap:8px;padding:24px 0;color:var(--mute);font-size:13.5px;text-align:center}
+.empty-art svg{width:120px;height:auto}
+.loading{color:var(--mute);padding:30px 0;text-align:center}
+.gate{min-height:100vh;display:grid;place-items:center;padding:16px}
+.gcard{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 22px;max-width:360px;width:100%;text-align:center;display:grid;gap:10px;justify-items:center;box-shadow:0 8px 30px rgba(60,25,130,.12)}
+.gcard h1{font-size:18px;margin:4px 0 0;color:var(--navy)}
+.foot{text-align:center;font-size:12px;color:var(--mute);padding-top:4px}
+@media (prefers-reduced-motion:no-preference){.day{transition:background .12s,border-color .12s}.hero .plane{animation:fly 9s ease-in-out infinite alternate}@keyframes fly{from{transform:translate(0,0)}to{transform:translate(-14px,6px)}}}
+</style>
+</head>
+<body>
+
+<div class="gate" id="gate" hidden>
+  <div class="gcard">
+    <svg viewBox="0 0 120 70" width="120" aria-hidden="true"><rect x="8" y="14" width="104" height="52" rx="10" fill="#EEE6FB"/><rect x="8" y="14" width="104" height="14" rx="7" fill="#4A1E9E"/><g fill="#C2902A"><circle cx="34" cy="44" r="5"/><circle cx="60" cy="44" r="5"/><circle cx="86" cy="44" r="5"/></g><path d="M40 4 L80 4" stroke="#C2902A" stroke-width="3" stroke-linecap="round"/></svg>
+    <h1>營三部 · 二期出入境班表</h1>
+    <p class="hint">請輸入密碼查看班表（這台裝置只要輸入一次）</p>
+    <div class="frow" style="justify-content:center"><input id="gpw" type="password" inputmode="numeric" autocomplete="off" aria-label="密碼" style="width:9em;text-align:center"><button class="primary" id="gateBtn">進入</button></div>
+    <div class="msg err" id="gateMsg"></div>
+  </div>
+</div>
+<div class="wrap" id="app" hidden>
+  <div class="hero">
+    <svg viewBox="0 0 800 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+      <defs>
+        <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A1585"/><stop offset=".6" stop-color="#5B24C2"/><stop offset="1" stop-color="#7A3BE0"/></linearGradient>
+        <linearGradient id="gd" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F7DE8F"/><stop offset=".5" stop-color="#D4A23A"/><stop offset="1" stop-color="#F3D27A"/></linearGradient>
+      </defs>
+      <rect width="800" height="140" fill="url(#sky)"/>
+      <g opacity=".9">
+        <path d="M560 140 L720 0 L748 0 L588 140 Z" fill="url(#gd)"/>
+        <path d="M610 140 L770 0 L782 0 L622 140 Z" fill="#E6EC4E" opacity=".85"/>
+        <path d="M650 140 L800 8 L800 40 L686 140 Z" fill="url(#gd)" opacity=".7"/>
+        <path d="M720 140 L800 70 L800 92 L746 140 Z" fill="#2B6BE0" opacity=".7"/>
+      </g>
+      <g fill="#FFFFFF" opacity=".12">
+        <ellipse cx="160" cy="34" rx="60" ry="10"/><ellipse cx="200" cy="26" rx="34" ry="10"/><ellipse cx="450" cy="50" rx="70" ry="9"/>
+      </g>
+      <g class="plane">
+        <path d="M300 74 L500 44" stroke="#F7DE8F" stroke-opacity=".6" stroke-width="2" stroke-dasharray="2 7" fill="none"/>
+        <g transform="translate(500 42) rotate(-8)" fill="#FFFFFF">
+          <path d="M-46 0 C-46 -5 -40 -7 -30 -7 L34 -7 C44 -7 52 -3 54 0 C52 3 44 5 34 5 L-30 5 C-40 5 -46 4 -46 0 Z"/>
+          <path d="M6 -2 L-14 -30 L-4 -30 L22 -2 Z"/>
+          <path d="M6 2 L-8 22 L0 22 L18 2 Z" opacity=".85"/>
+          <path d="M-40 -3 L-48 -20 L-41 -20 L-30 -4 Z" fill="#F3D27A"/>
+          <g fill="#4A1E9E" opacity=".6"><circle cx="40" cy="-2" r="1.6"/><circle cx="32" cy="-2" r="1.6"/><circle cx="24" cy="-2" r="1.6"/><circle cx="16" cy="-2" r="1.6"/><circle cx="8" cy="-2" r="1.6"/><circle cx="0" cy="-2" r="1.6"/><circle cx="-8" cy="-2" r="1.6"/><circle cx="-16" cy="-2" r="1.6"/></g>
+        </g>
+      </g>
+      <g fill="#24095A" opacity=".85">
+        <rect x="0" y="124" width="800" height="16"/>
+        <rect x="330" y="72" width="9" height="52"/><path d="M321 60 L348 60 L344 74 L325 74 Z"/><rect x="326" y="52" width="17" height="8" rx="2"/>
+        <rect x="360" y="102" width="170" height="22" rx="3"/><path d="M360 102 Q445 86 530 102 Z"/>
+      </g>
+      <g stroke="#F7DE8F" stroke-width="2" stroke-dasharray="18 14" opacity=".6"><line x1="0" y1="132" x2="800" y2="132"/></g>
+    </svg>
+    <div class="txt">
+      <div class="k"><small>TAOYUAN AIRPORT · 營業三部</small>二期出入境</div>
+      <div class="monthbar"><select id="monthSel" aria-label="月份"></select><span id="live" hidden></span></div>
+    </div>
+  </div>
+
+  <div class="stripe" aria-hidden="true"></div>
+  <div class="main">
+    <section class="panel" aria-label="月曆">
+      <h2 class="ptitle" style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="8.5" cy="14.5" r="1" fill="currentColor"/></svg><span id="calTitle">月曆</span></h2>
+      <div class="dow"><div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div></div>
+      <div class="grid" id="grid"><div class="loading" style="grid-column:1/-1">讀取班表中…</div></div>
+      <div class="legend">
+        <span><i style="background:var(--badbg);border:1px solid #F3C9C4"></i>國定假日／補假（人事行政總處 115 年辦公日曆表，今年無補班日）</span>
+        <span><i style="background:#FFE27A;border:1px solid #E8B923"></i>今天</span><span><i style="border:2px solid var(--navy)"></i>選取中</span>
+        <span><i style="background:var(--navy);border-radius:3px;width:22px;height:10px"></i>部門行程</span>
+      </div>
+    </section>
+
+    <section class="panel" id="detail" aria-live="polite"><div class="empty-state">點月曆上的日期，看當天班別。</div></section>
+  </div>
+
+  <details class="panel" id="setBox">
+    <summary style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="3"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15.5" r="1.4" fill="currentColor"/></svg>設定區 · 調班</summary>
+    <div id="loginBox" class="form">
+      <div class="frow"><label for="who">登入名稱</label><select id="who"></select></div>
+      <div class="frow"><label for="pw">密碼</label><input id="pw" type="password" inputmode="numeric" autocomplete="off" style="width:9em"><button class="primary" id="loginBtn">登入</button></div>
+      <div class="msg" id="loginMsg"></div>
+    </div>
+    <div id="swapBox" class="form" hidden>
+      <div class="frow" style="justify-content:space-between"><span>已登入：<b id="whoName"></b></span><button id="logoutBtn">登出</button></div>
+      <div class="slot">
+        <h4>我的班</h4>
+        <div class="frow"><label for="aDay">日期</label><select id="aDay"></select><select id="aName" aria-label="名稱" disabled></select></div>
+        <div class="cur" id="aCur"></div>
+      </div>
+      <div class="swapicon"><svg viewBox="0 0 28 28" aria-hidden="true"><circle cx="14" cy="14" r="13" fill="#FBF1DC"/><path d="M10 7v13M10 20l-3-3M10 20l3-3M18 21V8M18 8l-3 3M18 8l3 3" stroke="#B8862B" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="slot">
+        <h4>跟誰的班對調</h4>
+        <div class="frow"><label for="bDay">日期</label><select id="bDay"></select><select id="bName" aria-label="名稱"></select></div>
+        <div class="cur" id="bCur"></div>
+        <div class="hint">只能調整自己的班；對調對象可以選別人，也可以選自己另一天。</div>
+      </div>
+      <div class="frow"><button class="primary" id="saveBtn">存檔</button></div>
+      <div class="confirm" id="confirmBox" hidden>
+        <div id="confirmText"></div>
+        <div class="frow"><button class="primary" id="yesBtn">確定對調</button><button id="noBtn">取消</button></div>
+      </div>
+      <div class="msg" id="swapMsg"></div>
+    </div>
+  </details>
+
+  <section class="panel">
+    <h2 class="ptitle" style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>歷史更改紀錄<span class="hint" id="histCount" style="margin-left:auto;font-weight:500"></span></h2>
+    <ul class="hist" id="hist"><li class="empty-state">這個月還沒有人調班。</li></ul>
+  </section>
+  <div class="foot">班表來源：營三部幹部班表 · 調班存檔後所有人看到的班表同步更新（每 30 秒自動更新）</div>
+</div>
+
+<div class="sheet-bg" id="sheet" hidden>
+  <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shName">
+    <div class="who"><span class="av" id="shAv"></span><div><b id="shName"></b><span class="hint" id="shSub"></span></div></div>
+    <div class="num" id="shNum"></div>
+    <div class="acts">
+      <a class="dial" id="shDial" href="#"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2"/></svg>撥打</a>
+      <button type="button" id="shCopy">複製號碼</button>
+    </div>
+    <div class="hint" id="shMsg">若按「撥打」沒有反應，請複製號碼後撥打。</div>
+    <button type="button" id="shClose">關閉</button>
+  </div>
+</div>
+
+<script>
+const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYpOw3XYjC5XQWEgI1DjK97fkvrvxWKN91Y32ba2S0sYQ/exec";
+const WD = ["日","一","二","三","四","五","六"];
+/* 行政院人事行政總處「中華民國115年政府行政機關辦公日曆表」：國定假日與補假；115年無補行上班日（補班日請以「…補班」標示） */
+const HOL = {
+  "2026-01-01":"開國紀念日","2026-02-15":"小年夜","2026-02-16":"除夕","2026-02-17":"春節","2026-02-18":"春節","2026-02-19":"春節","2026-02-20":"春節補假",
+  "2026-02-27":"和平紀念日補假","2026-02-28":"和平紀念日","2026-04-03":"兒童節補假","2026-04-04":"兒童節","2026-04-05":"清明節","2026-04-06":"清明節補假",
+  "2026-05-01":"勞動節","2026-06-19":"端午節","2026-09-25":"中秋節","2026-09-28":"教師節","2026-10-09":"國慶日補假","2026-10-10":"國慶日",
+  "2026-10-25":"臺灣光復節","2026-10-26":"光復節補假","2026-12-25":"行憲紀念日"
+};
+const LEADS_ORDER = ["鄭宇辰","曾羽菲"];
+const VICE = ["鄭宇辰","曾羽菲"];
+const S = { key:"", allSwaps:[], db:null, months:{}, mk:null, swaps:[], unsubSwaps:null, sel:null, user:null };
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+const ls = { get(k){try{return localStorage.getItem(k)}catch(e){return null}}, set(k,v){try{localStorage.setItem(k,v)}catch(e){}} };
+
+/* ---------- schedule logic ---------- */
+function current(){                         // base cells + swaps replayed in time order
+  const m = S.months[S.mk]; if(!m) return null;
+  const cells = {};
+  for (const [n,p] of Object.entries(m.people)) cells[n] = Object.assign({}, p.cells||{});
+  const touched = new Set();
+  for (const s of S.swaps){
+    const a = s.a, b = s.b;
+    if(!cells[a.name] || !cells[b.name]) continue;
+    const va = cells[a.name][a.day] || "", vb = cells[b.name][b.day] || "";
+    cells[a.name][a.day] = vb; cells[b.name][b.day] = va;
+    touched.add(String(a.day)); touched.add(String(b.day));
+  }
+  return { m, cells, touched };
+}
+const OFF_RE = /本\s*\d|國\s*\d|國補|國休|^國$|喪|補休|加補|特休|^A$/;
+function info(p, raw){
+  const v = (raw||"").trim();
+  const fd = /FD/i.test(v);
+  const code = ((v.match(/[KL]\d/i)||[])[0]||"").toUpperCase() || (v.match(/Y[A-Z]/)||[])[0] || "";
+  const off = !code && OFF_RE.test(v.replace(/FD/ig,"").replace(/\s+/g,"").replace(/(志工|義工)/g,"")) ;
+  if (p.kind === "mgr"){
+    const work = !!code && !off;
+    return { work, off:!work, shift: work ? code : (v || "休"), fd:false, note:"" };
+  }
+  if (off) return { work:false, off:true, shift:v.replace(/FD/ig,"").trim(), fd, note:"" };
+  const shift = code || p.def || "—";
+  let note = v.replace(/FD/ig,"").replace(code,"").replace(/\s+/g," ").trim();
+  return { work:true, off:false, shift, fd, note, l9: shift==="L9" };
+}
+function pillClass(i){ return i.off ? "off" : i.fd ? "fd" : i.l9 ? "l9" : "w"; }
+function hk(m,d){ return `${m.year}-${String(m.month).padStart(2,"0")}-${String(d).padStart(2,"0")}`; }
+function dateOf(m, d){ return new Date(m.year, m.month-1, d); }
+
+/* ---------- render ---------- */
+function renderGrid(){
+  const c = current(); const g = $("grid");
+  if(!c){ g.innerHTML = '<div class="empty-state" style="grid-column:1/-1">還沒有班表資料。</div>'; return; }
+  const { m } = c; $("calTitle").textContent = `${m.year} 年 ${m.month} 月（${m.label||""}）`;
+  const first = dateOf(m,1).getDay();
+  const now = new Date(); const isThis = now.getFullYear()===m.year && now.getMonth()+1===m.month;
+  let h = "";
+  for(let i=0;i<first;i++) h += '<div class="day empty"></div>';
+  for(let d=1; d<=m.days; d++){
+    const hol = HOL[`${m.year}-${String(m.month).padStart(2,"0")}-${String(d).padStart(2,"0")}`];
+    const isWork = hol && hol.endsWith("補班");
+    h += `<button class="day${hol&&!isWork?" hol":""}${isWork?" mk":""}${isThis&&now.getDate()===d?" today":""}${S.sel===d?" sel":""}" data-d="${d}" aria-label="${m.month}月${d}日${hol?" "+hol:""}">
+      <span class="n"><span>${d}</span></span>${hol?`<span class="hn">${esc(hol)}</span>`:""}${(m.notes||{})[d]?`<span class="ev">${esc(m.notes[d])}</span>`:""}</button>`;
+  }
+  g.innerHTML = h;
+}
+
+const ICON_BADGE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>';
+const ICON_TEAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.3c3 .2 5.5 2.6 5.5 5.7"/></svg>';
+const isMain = i => i.work && (i.shift==="K6" || i.shift==="L2");
+function personRow(n, sub, i, cls){
+  return `<div class="row${i.off?" isoff":""}${i.fd&&!i.off?" isfd":""}"><span class="av">${esc(n[0])}</span><button type="button" class="nm call" data-n="${esc(n)}">${n}</button><span class="gp">${sub}</span><span class="pill ${cls}">${esc(i.shift||"休")}</span><span class="star">${i.fd&&!i.off?"★":""}</span></div>`;
+}
+function renderDetail(){
+  const c = current(); const box = $("detail");
+  if(!c || !S.sel){ box.innerHTML = '<div class="empty-state">點月曆上的日期，看當天班別。</div>'; return; }
+  const { m, cells } = c; const d = S.sel;
+  const wd = WD[dateOf(m,d).getDay()]; const hol = HOL[hk(m,d)];
+  let h = `<div class="dhead${hol?" h":""}"><div class="cal"><b>${m.month}月</b><span>${d}</span></div><div><div class="wd">星期${wd}</div><div class="tags">${hol?`<span class="tag red">${esc(hol)}</span>`:""}${(m.notes||{})[d]?`<span class="tag">${esc(m.notes[d])}</span>`:""}</div></div></div>`;
+  h += `<div class="sec">${ICON_BADGE}當值副理 / 副理班別</div>`;
+  let anyVice = false;
+  for(const n of VICE){
+    const p = m.people[n]; if(!p) continue;
+    const i = info(p, cells[n][d]); if(i.work) anyVice = true;
+    h += personRow(n, esc(p.title||"副理"), {...i, shift: i.work ? i.shift : (i.shift||"休")}, i.work ? "w" : "off");
+  }
+  if(!anyVice){
+    const found = {L2:[],K6:[]};
+    for(const [n,p] of Object.entries(m.people)){
+      if(p.kind!=="mgr" || VICE.includes(n)) continue;
+      const i = info(p, cells[n][d]);
+      if(i.work && found[i.shift]) found[i.shift].push(`${n}（${p.title||""}）`);
+    }
+    h += `<div class="fallback">兩位副理今天都沒班，當日主管：<br><b>L2</b>　${found.L2.join("、")||"無"}<br><b>K6</b>　${found.K6.join("、")||"無"}</div>`;
+  }
+  h += `<div class="sec">${ICON_TEAM}營三部二期出入境組長</div>`;
+  h += `<div class="thead" role="row"><span></span><span>名字</span><span>備註</span><span class="c">班別</span><span class="c fd">★值星</span></div>`;
+  const groups = [];
+  for(const n of m.order){ const p = m.people[n]; if(p?.kind==="lead" && !groups.includes(p.group)) groups.push(p.group); }
+  for(const g of groups){
+    const ppl = m.order.filter(n=>m.people[n]?.kind==="lead" && m.people[n].group===g).map(n=>({n, p:m.people[n], i:info(m.people[n], cells[n][d])}));
+    const ordered = [...ppl.filter(x=>isMain(x.i)), ...ppl.filter(x=>!isMain(x.i))];
+    h += `<div class="grp">${esc(g)}</div><div>`;
+    for(const {n,i} of ordered){
+      const cls = i.off ? "off" : i.fd ? "fd" : i.l9 ? "l9" : isMain(i) ? "w" : "oth";
+      h += personRow(n, i.note?esc(i.note):"", i, cls);
+    }
+    h += `</div>`;
+  }
+  box.innerHTML = h;
+}
+function fmtTime(iso){ const t=new Date(iso); if(isNaN(t)) return ""; const p=x=>String(x).padStart(2,"0"); return `${t.getMonth()+1}/${t.getDate()} ${p(t.getHours())}:${p(t.getMinutes())}`; }
+function shown(p, v){ const i = info(p, v); return i.off ? (i.shift||"休") : (i.shift + (i.fd?"★":"")); }
+function renderHist(){
+  const m = S.months[S.mk]; const ul = $("hist");
+  const list = [...S.swaps].reverse();
+  $("histCount").textContent = list.length ? `共 ${list.length} 筆` : "";
+  if(!list.length){ ul.innerHTML = '<li class="empty-state">這個月還沒有人調班。</li>'; return; }
+  ul.innerHTML = list.map(s=>{
+    const pa = m?.people[s.a.name]||{}, pb = m?.people[s.b.name]||{};
+    return `<li><div class="meta"><time>${fmtTime(s.at)}</time><span class="who">${esc(s.by)}</span>調班</div>
+      <div>${m?.month}/${esc(s.a.day)} ${esc(s.a.name)}「${esc(shown(pa,s.a.before))}」 ⇄ ${m?.month}/${esc(s.b.day)} ${esc(s.b.name)}「${esc(shown(pb,s.b.before))}」</div></li>`;
+  }).join("");
+}
+
+/* ---------- settings ---------- */
+function fillSelectors(){
+  const m = S.months[S.mk]; if(!m) return;
+  const names = ["鄭宇辰","曾羽菲", ...m.order.filter(n=>m.people[n]?.kind==="lead")];
+  const uniq = [...new Set(names)].filter(n=>m.people[n]);
+  const nameOpts = uniq.map(n=>`<option value="${n}">${n}</option>`).join("");
+  const keepWho = $("who").value;
+  $("who").innerHTML = uniq.map(n=>`<option>${n}</option>`).join(""); if(keepWho) $("who").value = keepWho;
+  const dayOpts = Array.from({length:m.days},(_,i)=>i+1).map(d=>`<option value="${d}">${m.month}/${d}（${WD[dateOf(m,d).getDay()]}）</option>`).join("");
+  for(const id of ["aDay","bDay"]){ const k=$(id).value; $(id).innerHTML = dayOpts; if(k) $(id).value=k; }
+  $("aName").innerHTML = S.user ? `<option value="${S.user}">${S.user}</option>` : "";
+  { const k=$("bName").value; $("bName").innerHTML = nameOpts; if(k) $("bName").value=k; }
+  showCur();
+}
+function showCur(){
+  const c = current(); if(!c) return;
+  for(const s of ["a","b"]){
+    const d = $(s+"Day").value, n = $(s+"Name").value, p = c.m.people[n];
+    if(!p){ $(s+"Cur").textContent=""; continue; }
+    $(s+"Cur").innerHTML = `${c.m.month}/${d} ${n} 目前班別：<b>${esc(shown(p, c.cells[n][d]))}</b>`;
+  }
+  $("confirmBox").hidden = true;
+}
+function doLogin(){
+  if($("pw").value !== S.key){ $("loginMsg").className="msg err"; $("loginMsg").textContent="密碼不對，請再輸入一次。"; return; }
+  S.user = $("who").value; $("whoName").textContent = S.user;
+  $("aName").innerHTML = `<option value="${S.user}">${S.user}</option>`; $("bName").value = S.user;
+  $("loginBox").hidden = true; $("swapBox").hidden = false; $("pw").value=""; $("loginMsg").textContent="";
+  if(S.sel){ $("aDay").value = S.sel; $("bDay").value = S.sel; showCur(); }
+}
+function askSave(){
+  const c = current(); const a={day:$("aDay").value,name:$("aName").value}, b={day:$("bDay").value,name:$("bName").value};
+  if(a.name!==S.user){ msg("只能調整自己的班。","err"); return; }
+  if(a.day===b.day && a.name===b.name){ msg("兩格是同一天同一人，請換一格。","err"); return; }
+  const va = shown(c.m.people[a.name], c.cells[a.name][a.day]), vb = shown(c.m.people[b.name], c.cells[b.name][b.day]);
+  $("confirmText").innerHTML = `把 <b>${c.m.month}/${a.day} ${a.name}「${esc(va)}」</b> 和 <b>${c.m.month}/${b.day} ${b.name}「${esc(vb)}」</b> 對調？`;
+  $("confirmBox").hidden = false; msg("");
+}
+async function doSave(){
+  const c = current(); if(!c || !S.user) return;
+  if($("aName").value!==S.user){ msg("只能調整自己的班。","err"); return; }
+  const a={day:$("aDay").value,name:$("aName").value}, b={day:$("bDay").value,name:$("bName").value};
+  const swap = { month:S.mk, by:S.user, a:{...a, before:c.cells[a.name][a.day]||""}, b:{...b, before:c.cells[b.name][b.day]||""} };
+  $("yesBtn").disabled = true; msg("存檔中…");
+  try{
+    const r = await fetch(API, { method:"POST", body: JSON.stringify({ k:S.key, swap }) });
+    const j = await r.json();
+    if(!j.ok) throw new Error(j.err||"fail");
+    $("confirmBox").hidden = true; msg("已存檔，所有人看到的班表都已更新。","ok");
+    await load();
+  }catch(e){
+    msg(e.message==="self" ? "只能調整自己的班。" : "存檔失敗，請檢查網路後再試一次。","err");
+  }finally{ $("yesBtn").disabled = false; }
+}
+function msg(t,k){ $("swapMsg").className = "msg " + (k||""); $("swapMsg").textContent = t; }
+
+/* ---------- data wiring ---------- */
+function setMonth(mk){
+  S.mk = mk; ls.set("roster_month", mk);
+  const m = S.months[mk]; if(!m) return;
+  const now = new Date();
+  S.sel = (now.getFullYear()===m.year && now.getMonth()+1===m.month) ? now.getDate() : 1;
+  S.swaps = S.allSwaps.filter(x=>x.month===mk);
+  renderAll();
+}
+function liveErr(t){ const e=$("live"); e.textContent=t; e.hidden=false; }
+function renderAll(){ renderGrid(); renderDetail(); renderHist(); fillSelectors(); }
+
+async function load(){
+  const r = await fetch(API + "?k=" + encodeURIComponent(S.key) + "&t=" + Date.now());
+  const j = await r.json();
+  if(!j.ok){ if(j.err==="auth"){ ls.set("roster_key",""); showGate("密碼不對，請重新輸入。"); } return false; }
+  S.months = j.months || {};
+  S.allSwaps = (j.swaps||[]).sort((x,y)=>String(x.at).localeCompare(String(y.at)));
+  const keys = Object.keys(S.months).sort();
+  const sel = $("monthSel");
+  const opts = keys.map(k=>`<option value="${k}">${esc(S.months[k].label||k)}</option>`).join("");
+  if(sel.innerHTML !== opts) sel.innerHTML = opts;
+  if(!keys.length){ $("grid").innerHTML = '<div class="empty-state" style="grid-column:1/-1">還沒有班表資料。</div>'; return true; }
+  if(!S.mk || !S.months[S.mk]){
+    const saved = ls.get("roster_month");
+    const now = new Date(); const nowKey = `${now.getFullYear()}-${String(now.getMonth()+1).padStart(2,"0")}`;
+    const pick = S.months[saved] ? saved : (S.months[nowKey] ? nowKey : keys[keys.length-1]);
+    sel.value = pick; setMonth(pick);
+  } else {
+    const before = JSON.stringify(S.swaps);
+    S.swaps = S.allSwaps.filter(x=>x.month===S.mk);
+    if(JSON.stringify(S.swaps)!==before) { renderGrid(); renderDetail(); renderHist(); showCur(); }
+  }
+  $("live").hidden = true;
+  return true;
+}
+function showGate(t){ $("gate").hidden = false; $("app").hidden = true; $("gateMsg").textContent = t||""; setTimeout(()=>$("gpw").focus(),50); }
+async function enter(){
+  S.key = $("gpw").value.trim(); if(!S.key) return;
+  $("gateBtn").disabled = true; $("gateMsg").textContent = "讀取中…";
+  try{
+    if(await load()){ ls.set("roster_key", S.key); $("gate").hidden = true; $("app").hidden = false; startPoll(); }
+  }catch(e){ $("gateMsg").textContent = "連不上班表資料，請檢查網路後再試。"; }
+  finally{ $("gateBtn").disabled = false; }
+}
+let pollT = null;
+function startPoll(){
+  if(pollT) return;
+  pollT = setInterval(()=>{ if(!document.hidden) load().catch(()=>liveErr("網路中斷，稍後自動重試")); }, 30000);
+  document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) load().catch(()=>{}); });
+}
+async function boot(){
+  S.allSwaps = [];
+  $("gateBtn").addEventListener("click", enter);
+  $("gpw").addEventListener("keydown", e=>{ if(e.key==="Enter") enter(); });
+  const k = ls.get("roster_key");
+  if(k){ $("gpw").value = k; await enter(); } else showGate();
+}
+
+$("grid").addEventListener("click", e=>{
+  const b = e.target.closest(".day[data-d]"); if(!b) return;
+  S.sel = +b.dataset.d; renderGrid(); renderDetail();
+  if(S.user){ $("aDay").value = S.sel; showCur(); }
+  if(matchMedia("(max-width:860px)").matches) $("detail").scrollIntoView({behavior:"smooth",block:"start"});
+});
+$("monthSel").addEventListener("change", e=>setMonth(e.target.value));
+$("loginBtn").addEventListener("click", doLogin);
+$("pw").addEventListener("keydown", e=>{ if(e.key==="Enter") doLogin(); });
+$("logoutBtn").addEventListener("click", ()=>{ S.user=null; $("aName").innerHTML=""; $("swapBox").hidden=true; $("loginBox").hidden=false; msg(""); });
+for(const id of ["aDay","aName","bDay","bName"]) $(id).addEventListener("change", showCur);
+$("saveBtn").addEventListener("click", askSave);
+$("yesBtn").addEventListener("click", doSave);
+$("noBtn").addEventListener("click", ()=>{ $("confirmBox").hidden = true; });
+function openCall(n){
+  const p = S.months[S.mk]?.people[n]; if(!p) return;
+  const tel = (p.tel||"").trim();
+  $("shAv").textContent = n[0]; $("shName").textContent = n;
+  $("shSub").textContent = p.kind==="mgr" ? (p.title||"") : (p.group||"");
+  $("shNum").textContent = tel || "班表上沒有這位的電話";
+  $("shDial").hidden = !tel; $("shCopy").hidden = !tel;
+  $("shDial").href = "tel:" + tel.replace(/[^0-9+]/g,"");
+  $("shMsg").textContent = "若按「撥打」沒有反應，請複製號碼後撥打。";
+  $("sheet").hidden = false;
+}
+$("detail").addEventListener("click", e=>{ const b = e.target.closest(".call"); if(b) openCall(b.dataset.n); });
+$("shClose").addEventListener("click", ()=>{ $("sheet").hidden = true; });
+$("sheet").addEventListener("click", e=>{ if(e.target.id==="sheet") $("sheet").hidden = true; });
+document.addEventListener("keydown", e=>{ if(e.key==="Escape") $("sheet").hidden = true; });
+$("shCopy").addEventListener("click", ()=>{
+  const t = $("shNum").textContent;
+  try{ navigator.clipboard.writeText(t).then(()=>{ $("shMsg").textContent="已複製 "+t; }, sel); }catch(e){ sel(); }
+  function sel(){ const r=document.createRange(); r.selectNodeContents($("shNum")); const g=getSelection(); g.removeAllRanges(); g.addRange(r); $("shMsg").textContent="已選取號碼，請長按複製。"; }
+});
+boot();
+</script>
+
+</body>
+</html>
