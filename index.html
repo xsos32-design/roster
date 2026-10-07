@@ -83,12 +83,26 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .mgrs{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px}
 .mg{border:1px solid var(--line);border-radius:12px;padding:4px 8px;background:var(--card)}
 .mg.vice{border-color:var(--navy);background:var(--nightbg)}
-.phases{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
-.phase{border:2px solid var(--line);border-radius:16px;padding:10px 10px 6px;min-width:0;background:var(--card)}
-.phase.p1{border-color:var(--navy)} .phase.p2{border-color:var(--gold)}
-.phase h3{display:flex;align-items:center;gap:8px;margin:0 0 4px;font-size:18px;font-weight:900;padding-bottom:6px;border-bottom:3px solid}
-.phase.p1 h3{color:var(--navy);border-color:var(--navy)} .phase.p2 h3{color:#8A6418;border-color:var(--gold)}
-.phase h3 i{width:10px;height:10px;border-radius:50%;background:currentColor}
+.keys{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--mute);margin:12px 0 8px;align-items:center}
+.keys span{display:inline-flex;align-items:center;gap:5px}
+.keys .kfd{font-family:var(--mono);color:#8A6418;font-size:12px}
+.kb{display:inline-block;width:18px;height:12px;border-radius:4px;border:2px solid var(--navy)}
+.kb.l9{background:#2A1260;border-color:#2A1260} .kb.off{border:2px dashed var(--off)}
+.quads{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.quad{border:1px solid var(--line);border-radius:16px;padding:0 10px 6px;min-width:0;background:var(--card);overflow:hidden}
+.quad h3{display:flex;align-items:center;gap:6px;margin:0 -10px 4px;padding:8px 12px;font-size:16px;font-weight:900;color:#FFFFFF}
+.quad h3 svg{width:18px;height:18px;flex:none}
+.quad.zin h3{background:var(--navy)} .quad.zout h3{background:#A87A1F}
+.quad.night.zin h3{background:#2A1260} .quad.night.zout h3{background:#6E4E10}
+.quad.zin{border-color:#CDBDEE} .quad.zout{border-color:#EBD7A6}
+.quad .ph{font-size:11.5px;font-weight:700;color:var(--mute);letter-spacing:.12em;margin:8px 0 0;padding-bottom:2px;border-bottom:1px dashed var(--line)}
+.quad .none{font-size:13px;color:var(--off);padding:12px 2px}
+.quad.zout .pl .ac{color:#8A6418;background:var(--goldbg)}
+.offbox{margin-top:10px;border:1px dashed var(--off);border-radius:16px;padding:8px 12px;background:var(--soft)}
+.offbox h3{display:flex;align-items:center;gap:8px;margin:0 0 4px;font-size:15px;color:var(--mute)}
+.offbox .cnt{font-size:12px;font-weight:500}
+.offgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(165px,1fr));gap:0 12px}
+.offgrid .pl{border-bottom:1px solid var(--line)}
 .pl{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 2px;border-bottom:1px solid var(--line)}
 .pl:last-child{border-bottom:0}
 .pl .pn{min-width:0;display:flex;flex-direction:column}
@@ -96,7 +110,6 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .pl .nmr .call{flex:none;overflow:visible}
 @media (max-width:520px){.pl .nmr{gap:3px}.pl .ac{font-size:9.5px;padding:0 3px}.star{font-size:10px}.pl{grid-template-columns:auto minmax(0,1fr) auto;gap:4px}}
 .pl .ac{font-family:var(--mono);font-size:10.5px;font-weight:700;color:var(--navy);background:var(--nightbg);border-radius:5px;padding:0 5px;line-height:1.6;flex:none}
-.phase.p2 .pl .ac{color:#8A6418;background:var(--goldbg)}
 .pl.isoff .ac{color:var(--off);background:var(--soft)}
 .grp.off{color:var(--off)}
 .pl .pn small{font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -108,7 +121,7 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .bd.oth{border-color:var(--gold);color:#8A6418}
 .bd.off{border:2px dashed var(--off);color:var(--off);font-family:var(--sans);font-weight:500}
 .mg .pl{border:0}
-@media (max-width:520px){.phases{gap:6px}.phase{padding:8px 6px 4px;border-radius:12px}.bd{min-width:3.1em;font-size:12px;padding:3px 4px}.pl{gap:5px}.pl .call{font-size:14px}.phase h3{font-size:16px}}
+@media (max-width:520px){.quads{gap:6px}.quad{padding:0 6px 4px;border-radius:12px}.quad h3{margin:0 -6px 4px;padding:7px 8px;font-size:15px}.offgrid{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:0 8px}.bd{min-width:3.1em;font-size:12px;padding:3px 4px}.pl{gap:5px}.pl .call{font-size:14px}.phase h3{font-size:16px}}
 .dhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:12px;margin-bottom:6px;border-bottom:1px solid var(--line)}
 .dhead .cal{width:58px;border-radius:10px;overflow:hidden;border:1px solid var(--line);text-align:center;flex:none}
 .dhead .cal b{display:block;background:var(--navy);color:#FFFFFF;font-size:11px;letter-spacing:.1em;padding:1px 0}
@@ -326,6 +339,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"1.9", d:"2026-10-07", items:[ "點日期後改成四宮格：入境早班｜出境早班／入境晚班｜出境晚班，每格內再分一期、二期", "主管維持在最上方；休假的人集中在四宮格下方的「休假」區", "加上圖例（值星、上班、大夜、休假）與整體版面整理" ]},
   { v:"1.8", d:"2026-10-07", items:[ "名字旁顯示區域代號（YA／YB／YN／YS／SA／SD）", "休假的人統一移到各期最下方的「休假」區" ]},
   { v:"1.7", d:"2026-10-07", items:[ "主畫面／書籤小圖示改為「營三部 班表」字樣，主畫面名稱改為「營三部班表」" ]},
   { v:"1.6", d:"2026-10-07", items:[ "加入主畫面／書籤小圖示" ]},
@@ -470,29 +484,30 @@ function renderDetail(){
     for(const n of mgrs){ if(VICE.includes(n)) continue; const i = info(m.people[n], cells[n][d]); if(i.work && found[i.shift]) found[i.shift].push(n); }
     h += `<div class="fallback">兩位副理今天都沒班，當日主管：<b>L2</b> ${found.L2.join("、")||"無"}　<b>K6</b> ${found.K6.join("、")||"無"}</div>`;
   }
-  // 一期｜二期
-  h += `<div class="hint" style="margin:12px 0 6px">(FD)＝值星　點名字可撥打電話</div><div class="phases">`;
-  for(const ph of ["一期","二期"]){
-    const names = m.order.filter(n=>m.people[n]?.kind==="lead" && area(m.people[n]).phase===ph);
-    if(!names.length) continue;
-    const groups = GROUPS.filter(g=>names.some(n=>area(m.people[n]).group===g));
-    h += `<section class="phase ${ph==="一期"?"p1":"p2"}"><h3><i></i>${ph}</h3>`;
-    const all = names.map(n=>({n, p:m.people[n], a:area(m.people[n]), i:info(m.people[n], cells[n][d])}));
-    for(const g of groups){
-      const ppl = all.filter(x=>x.a.group===g && !x.i.off);
-      if(!ppl.length) continue;
-      const ordered = [...ppl.filter(x=>isMain(x.i)), ...ppl.filter(x=>!isMain(x.i))];
-      h += `<div class="grp">${esc(g.slice(0,2)+"・"+g.slice(2))}</div>`;
+  // 入境／出境 × 早班／晚班
+  h += `<div class="keys"><span><b class="kfd">(FD)</b>值星</span><span><i class="kb w"></i>上班</span><span><i class="kb l9"></i>大夜 L9</span><span><i class="kb off"></i>休假</span><span>點名字可撥打電話</span></div>`;
+  const leads = m.order.filter(n=>m.people[n]?.kind==="lead").map(n=>({n, p:m.people[n], a:area(m.people[n]), i:info(m.people[n], cells[n][d])}));
+  const QUADS = [["入境日班","入境早班","zin",0],["出境日班","出境早班","zout",0],["入境夜班","入境晚班","zin",1],["出境夜班","出境晚班","zout",1]];
+  h += `<div class="quads">`;
+  for(const [g,label,zc,night] of QUADS){
+    const ppl = leads.filter(x=>x.a.group===g && !x.i.off);
+    h += `<section class="quad ${zc}${night?" night":""}"><h3>${night?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>'}${label}</h3>`;
+    if(!ppl.length) h += `<div class="none">今天沒有人上班</div>`;
+    for(const ph of ["一期","二期"]){
+      const pp = ppl.filter(x=>x.a.phase===ph); if(!pp.length) continue;
+      const ordered = [...pp.filter(x=>isMain(x.i)), ...pp.filter(x=>!isMain(x.i))];
+      h += `<div class="ph">${ph}</div>`;
       for(const {n,a,i} of ordered) h += personLine(n, i, esc([a.team, i.note].filter(Boolean).join("・")), a.code);
-    }
-    const offs = all.filter(x=>x.i.off);
-    if(offs.length){
-      h += `<div class="grp off">休假<span class="cnt">${offs.length} 人</span></div>`;
-      for(const {n,a,i} of offs) h += personLine(n, i, esc([a.zone+"・"+a.shift, a.team].filter(Boolean).join("・")), a.code);
     }
     h += `</section>`;
   }
   h += `</div>`;
+  const offs = leads.filter(x=>x.i.off);
+  if(offs.length){
+    h += `<section class="offbox"><h3>休假<span class="cnt">${offs.length} 人</span></h3><div class="offgrid">`;
+    for(const ph of ["一期","二期"]) for(const {n,a,i} of offs.filter(x=>x.a.phase===ph)) h += personLine(n, i, esc(a.phase+a.zone+(a.shift==="日班"?"早班":"晚班")+(a.team?"・"+a.team:"")), a.code);
+    h += `</div></section>`;
+  }
   box.innerHTML = h;
 }
 function fmtTime(iso){ const t=new Date(iso); if(isNaN(t)) return ""; const p=x=>String(x).padStart(2,"0"); return `${t.getMonth()+1}/${t.getDate()} ${p(t.getHours())}:${p(t.getMinutes())}`; }
