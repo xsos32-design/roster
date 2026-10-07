@@ -417,7 +417,7 @@ html.cyber .shchips button.on{background:#22E6FF;color:#04121A}
       <div class="swapgrid">
         <div class="sside"><div class="slab">我的班</div><select id="aName" aria-label="人名" disabled></select><select id="aDay" aria-label="日期"></select><div class="scur" id="aCur"></div></div>
         <div class="sarrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg></div>
-        <div class="sside"><div class="slab">換成</div><select id="bName" aria-label="人名"></select><select id="bDay" aria-label="日期"></select><div class="scur" id="bCur"></div></div>
+        <div class="sside"><div class="slab">換成</div><select id="bName" aria-label="班別或人名"></select><select id="bDay" aria-label="日期"></select><div class="scur" id="bCur"></div></div>
       </div>
       <div class="shchips" id="shChips"><span class="shl">我這天改成</span><button type="button" data-sh="K6">K6</button><button type="button" data-sh="K8">K8</button><button type="button" data-sh="KA">KA</button><button type="button" data-sh="L0">L0</button><button type="button" data-sh="L2">L2</button><button type="button" data-sh="L4">L4</button><button type="button" data-sh="L9">L9</button></div>
       <div class="hint">右邊選自己＝自己兩天的班對調；選別人＝同一天互換；按班別按鈕＝直接把左邊這天改成該班別（會先跳出確認）。</div>
@@ -467,6 +467,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.10", d:"2026-10-07", items:[ "右邊「換成」選單最上面就是班別 K6、K8、KA、L0、L2、L4、L9，下面才是人名" ]},
   { v:"3.9", d:"2026-10-07", items:[ "調班區加上班別按鈕列「我這天改成 K6 K8 KA L0 L2 L4 L9」，按一下就出現確認" ]},
   { v:"3.8", d:"2026-10-07", items:[ "調班右邊可選「直接改成班別」：K6、K8、KA、L0、L2、L4、L9，把自己當天的班直接改掉（有 FD 會保留）" ]},
   { v:"3.7", d:"2026-10-07", items:[ "調班畫面改成「人名・班別 ⇄ 人名・班別」並排", "右邊選自己就是自己兩天對調；選別人時日期自動對齊同一天" ]},
@@ -710,7 +711,7 @@ function fillSelectors(){
   for(const id of ["sDay","lDay"]){ const k=$(id).value; $(id).innerHTML = dayOpts; if(k) $(id).value=k; }
   { const k=$("sName").value; $("sName").innerHTML = nameOpts; if(k) $("sName").value=k; }
   showAdm();
-  { const k=$("bName").value; $("bName").innerHTML = `<optgroup label="跟人對調">${nameOpts}</optgroup><optgroup label="直接改成班別">${SHIFTS.map(x=>`<option value="@${x}">${x}</option>`).join("")}</optgroup>`; if(k) $("bName").value=k; }
+  { const k=$("bName").value; $("bName").innerHTML = `<optgroup label="改成班別">${SHIFTS.map(x=>`<option value="@${x}">班別 ${x}</option>`).join("")}</optgroup><optgroup label="跟人對調">${nameOpts}</optgroup>`; if(k) $("bName").value=k; }
   showCur();
 }
 function showAdm(){
