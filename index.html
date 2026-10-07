@@ -104,6 +104,15 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .offq .quad.night h3{background:#7A8090 !important}
 .offq .quad{border-color:var(--line);background:var(--soft)}
 .offq .pl .ac{color:var(--off) !important;background:var(--card) !important}
+.offdet{margin-top:14px;border:1px dashed var(--off);border-radius:16px;background:var(--soft);padding:0 10px}
+.offdet>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:10px 2px;font-weight:700;color:var(--mute)}
+.offdet>summary::-webkit-details-marker{display:none}
+.offdet>summary .cnt{font-size:12px;font-weight:500}
+.offdet>summary .tg{margin-left:auto;font-size:12px;font-weight:500;color:var(--navy)}
+.offdet>summary .tg::after{content:"展開 ▾"} .offdet[open]>summary .tg::after{content:"收合 ▴"}
+.offdet[open]{padding-bottom:10px}
+.offdet .ph{font-size:12px;font-weight:700;color:var(--mute);letter-spacing:.12em}
+.offm .mg{background:var(--card);border-color:var(--line)}
 .sec.offsec{color:var(--mute);margin-top:16px}
 .sec .cnt{font-size:12px;font-weight:500;color:var(--mute);letter-spacing:0}
 .dh{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;background:var(--card);margin:-4px -16px 0;padding:8px 16px 10px}
@@ -354,6 +363,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"2.1", d:"2026-10-07", items:[ "休假的主管（理級等）也移到下方休假區，主管區只列當天有上班的人", "休假名單（主管＋組長）預設收合，點「休假名單」展開", "移除李宇軒（SA）的資料" ]},
   { v:"2.0", d:"2026-10-07", items:[ "休假名單也改成四宮格（入境早班／出境早班／入境晚班／出境晚班），格內再分一期、二期", "每格標題右側顯示人數", "日期列固定在畫面上方，並加上「‹ 前一天／後一天 ›」切換", "手機版頂部橫幅縮小" ]},
   { v:"1.9", d:"2026-10-07", items:[ "點日期後改成四宮格：入境早班｜出境早班／入境晚班｜出境晚班，每格內再分一期、二期", "主管維持在最上方；休假的人集中在四宮格下方的「休假」區", "加上圖例（值星、上班、大夜、休假）與整體版面整理" ]},
   { v:"1.8", d:"2026-10-07", items:[ "名字旁顯示區域代號（YA／YB／YN／YS／SA／SD）", "休假的人統一移到各期最下方的「休假」區" ]},
@@ -487,13 +497,16 @@ function renderDetail(){
   const mgrs = m.order.filter(n=>m.people[n]?.kind==="mgr");
   const mOrder = [...VICE.filter(n=>mgrs.includes(n)), ...mgrs.filter(n=>!VICE.includes(n))];
   h += `<div class="sec">${ICON_BADGE}主管</div><div class="mgrs">`;
-  let anyVice = false;
+  let anyVice = false; const offMgr = [];
+  const mgCard = (n, i) => { const p = m.people[n]; const ii = {...i, off: !i.work, shift: i.work ? i.shift : (i.shift||"休")};
+    return `<div class="mg${VICE.includes(n)?" vice":""}">${personLine(n, ii, esc((VICE.includes(n)?"副理・":"")+(p.title||"")+(p.area?"・"+p.area:"")))}</div>`; };
   for(const n of mOrder){
-    const p = m.people[n]; const i = info(p, cells[n][d]);
+    const i = info(m.people[n], cells[n][d]);
     if(VICE.includes(n) && i.work) anyVice = true;
-    const ii = {...i, off: !i.work, shift: i.work ? i.shift : (i.shift||"休")};
-    h += `<div class="mg${VICE.includes(n)?" vice":""}">${personLine(n, ii, esc((VICE.includes(n)?"副理・":"")+(p.title||"")+(p.area?"・"+p.area:"")))}</div>`;
+    if(!i.work){ offMgr.push([n,i]); continue; }
+    h += mgCard(n, i);
   }
+  if(offMgr.length===mOrder.length) h += `<div class="none" style="padding:8px 2px">今天主管都休假</div>`;
   h += `</div>`;
   if(!anyVice){
     const found = {L2:[],K6:[]};
@@ -524,8 +537,15 @@ function renderDetail(){
   };
   h += quads(leads.filter(x=>!x.i.off), false);
   const offs = leads.filter(x=>x.i.off);
-  if(offs.length) h += `<div class="sec offsec">休假<span class="cnt">${offs.length} 人</span></div>` + quads(offs, true);
+  const offN = offs.length + offMgr.length;
+  if(offN){
+    h += `<details class="offdet" id="offDet"${S.offOpen?" open":""}><summary><span>休假名單</span><span class="cnt">${offN} 人（主管 ${offMgr.length}・組長 ${offs.length}）</span><span class="tg"></span></summary>`;
+    if(offMgr.length) h += `<div class="ph" style="margin-top:6px">主管</div><div class="mgrs offm">${offMgr.map(([n,i])=>mgCard(n,i)).join("")}</div>`;
+    if(offs.length) h += `<div class="ph" style="margin-top:10px">組長</div>` + quads(offs, true);
+    h += `</details>`;
+  }
   box.innerHTML = h;
+  const od = $("offDet"); if(od) od.addEventListener("toggle", ()=>{ S.offOpen = od.open; });
 }
 function fmtTime(iso){ const t=new Date(iso); if(isNaN(t)) return ""; const p=x=>String(x).padStart(2,"0"); return `${t.getMonth()+1}/${t.getDate()} ${p(t.getHours())}:${p(t.getMinutes())}`; }
 function shown(p, v){ const i = info(p, v); return i.off ? (i.shift||"休") : (i.shift + (i.fd?"(FD)":"")); }
