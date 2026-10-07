@@ -39,23 +39,26 @@ button.primary{background:var(--navy);border-color:var(--navy);color:#FFFFFF;fon
 button.primary:hover{background:#5B2BBE}
 button:disabled{opacity:.45;cursor:not-allowed}
 :focus-visible{outline:2px solid var(--gold);outline-offset:2px}
-.main{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:16px;align-items:start}
+.main{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;align-items:start}
 @media (max-width:860px){.main{grid-template-columns:minmax(0,1fr)}}
 .stripe{height:5px;border-radius:3px;background:linear-gradient(90deg,#E6334A 0 16.6%,#2B7BE4 0 33.3%,#F39A1E 0 50%,#7CC242 0 66.6%,#F3C21E 0 83.3%,#1EB6E6 0)}
 .panel{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0;box-shadow:0 2px 10px rgba(60,25,130,.05)}
 .ptitle{display:flex;align-items:center;gap:8px;font-weight:700;font-size:15px;margin:0 0 10px}
 .ptitle svg{width:20px;height:20px;flex:none}
 .dow,.grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:6px}
-.dow div{font-size:12px;color:var(--mute);text-align:center;padding-bottom:2px;letter-spacing:.1em;font-weight:500}
+.dow div{font-size:13px;color:var(--mute);text-align:center;padding-bottom:2px;letter-spacing:.1em;font-weight:700}
+.dow .sun,.day .w.sun{color:var(--bad)} .dow .sat,.day .w.sat{color:var(--navy)}
 .day{appearance:none;text-align:center;border:1px solid var(--line);background:var(--soft);border-radius:12px;padding:6px 3px;min-height:58px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:2px;min-width:0}
 .day:hover{border-color:var(--navy)}
-.day .n{font-family:var(--mono);font-weight:600;font-size:16px;line-height:1.6;min-width:1.9em;border-radius:8px}
+.day .n{font-family:var(--mono);font-weight:700;font-size:20px;line-height:1.3}
+.day .w{font-size:11px;color:var(--mute);line-height:1.2}
+.day .td{font-size:10.5px;font-weight:700;color:var(--ink)}
 .day .hn{font-size:10.5px;color:var(--bad);line-height:1.2;word-break:break-all;font-weight:500}
 .day.hol{background:var(--badbg);border-color:#F3C9C4}
 .day.hol .n{color:var(--bad)}
 .day.mk .hn{color:var(--mute)}
 .day .ev{font-size:10.5px;line-height:1.2;color:#FFFFFF;background:var(--navy);border-radius:5px;padding:1px 4px;word-break:break-all;max-width:100%}
-.day.today{background:#FFE27A;border-color:#E8B923}
+.day.today{background:#FFE27A;border-color:#E8B923;box-shadow:0 0 0 2px #E8B923 inset}
 .day.today .n{color:var(--ink)}
 .day.today.hol .n{color:var(--bad)}
 .day.sel{border-color:var(--navy);box-shadow:0 0 0 2px var(--navy) inset}
@@ -68,10 +71,35 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .adm{background:var(--navy);color:#FFFFFF;border-radius:6px;font-size:11px;padding:1px 7px;margin-left:6px;font-weight:700}
 .admbox{border:1px dashed var(--gold);background:var(--goldbg);border-radius:12px;padding:12px;display:grid;gap:10px}
 .admbox h4{margin:0;font-size:13px;color:#8A6418}
-@media (max-width:520px){.dow,.grid{gap:4px}.day{min-height:50px;padding:4px 1px;border-radius:9px}.day .n{font-size:14px}.day .hn,.day .ev{font-size:9px}.day .ev{padding:1px 2px}}
+@media (max-width:520px){.dow,.grid{gap:4px}.day{min-height:60px;padding:4px 1px;border-radius:10px}.day .n{font-size:17px}.day .hn,.day .ev,.day .td{font-size:9px}.day .ev{padding:1px 2px}}
 .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--mute);margin-top:12px}
 .legend span{display:inline-flex;align-items:center;gap:6px}
 .legend i{display:inline-block;width:12px;height:12px;border-radius:4px}
+.dh{display:flex;align-items:baseline;justify-content:center;flex-wrap:wrap;gap:10px;padding:4px 0 12px;border-bottom:1px solid var(--line)}
+.dh .dt{font-family:var(--mono);font-size:26px;font-weight:700;color:var(--ink)} .dh .dt.red{color:var(--bad)}
+.dh .dw{font-size:16px;color:var(--mute)}
+.mgrs{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:6px}
+.mg{border:1px solid var(--line);border-radius:12px;padding:4px 8px;background:var(--card)}
+.mg.vice{border-color:var(--navy);background:var(--nightbg)}
+.phases{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px}
+.phase{border:2px solid var(--line);border-radius:16px;padding:10px 10px 6px;min-width:0;background:var(--card)}
+.phase.p1{border-color:var(--navy)} .phase.p2{border-color:var(--gold)}
+.phase h3{display:flex;align-items:center;gap:8px;margin:0 0 4px;font-size:18px;font-weight:900;padding-bottom:6px;border-bottom:3px solid}
+.phase.p1 h3{color:var(--navy);border-color:var(--navy)} .phase.p2 h3{color:#8A6418;border-color:var(--gold)}
+.phase h3 i{width:10px;height:10px;border-radius:50%;background:currentColor}
+.pl{display:grid;grid-template-columns:auto minmax(0,1fr) 1.1em;gap:8px;align-items:center;padding:6px 2px;border-bottom:1px solid var(--line)}
+.pl:last-child{border-bottom:0}
+.pl .pn{min-width:0;display:flex;flex-direction:column}
+.pl .pn small{font-size:11px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pl .call{font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:left}
+.pl.isoff .call{color:var(--off)}
+.bd{font-family:var(--mono);font-weight:700;font-size:13px;min-width:3.6em;text-align:center;padding:4px 6px;border-radius:10px;border:2px solid var(--navy);color:var(--navy);background:var(--card);white-space:nowrap}
+.bd.fd{background:var(--gold);border-color:var(--gold);color:#FFFFFF}
+.bd.l9{background:#2A1260;border-color:#2A1260;color:#FFFFFF}
+.bd.oth{border-color:var(--gold);color:#8A6418}
+.bd.off{border:2px dashed var(--off);color:var(--off);font-family:var(--sans);font-weight:500}
+.mg .pl{border:0}
+@media (max-width:520px){.phases{gap:6px}.phase{padding:8px 6px 4px;border-radius:12px}.bd{min-width:3.1em;font-size:12px;padding:3px 4px}.pl{gap:5px}.pl .call{font-size:14px}.phase h3{font-size:16px}}
 .dhead{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-bottom:12px;margin-bottom:6px;border-bottom:1px solid var(--line)}
 .dhead .cal{width:58px;border-radius:10px;overflow:hidden;border:1px solid var(--line);text-align:center;flex:none}
 .dhead .cal b{display:block;background:var(--navy);color:#FFFFFF;font-size:11px;letter-spacing:.1em;padding:1px 0}
@@ -160,7 +188,7 @@ details[open].panel>summary::after{content:"收合"}
 <div class="gate" id="gate" hidden>
   <div class="gcard">
     <svg viewBox="0 0 120 70" width="120" aria-hidden="true"><rect x="8" y="14" width="104" height="52" rx="10" fill="#EEE6FB"/><rect x="8" y="14" width="104" height="14" rx="7" fill="#4A1E9E"/><g fill="#C2902A"><circle cx="34" cy="44" r="5"/><circle cx="60" cy="44" r="5"/><circle cx="86" cy="44" r="5"/></g><path d="M40 4 L80 4" stroke="#C2902A" stroke-width="3" stroke-linecap="round"/></svg>
-    <h1>營三部 · 二期出入境班表</h1>
+    <h1>營三部 · 一、二期出入境班表</h1>
     <p class="hint">請輸入密碼查看班表（這台裝置只要輸入一次）</p>
     <div class="frow" style="justify-content:center"><input id="gpw" type="password" inputmode="numeric" autocomplete="off" aria-label="密碼" style="width:9em;text-align:center"><button class="primary" id="gateBtn">進入</button></div>
     <div class="msg err" id="gateMsg"></div>
@@ -201,7 +229,7 @@ details[open].panel>summary::after{content:"收合"}
       <g stroke="#F7DE8F" stroke-width="2" stroke-dasharray="18 14" opacity=".6"><line x1="0" y1="132" x2="800" y2="132"/></g>
     </svg>
     <div class="txt">
-      <div class="k"><small>TAOYUAN AIRPORT · 營業三部</small>二期出入境</div>
+      <div class="k"><small>TAOYUAN AIRPORT · 營業三部</small>一、二期出入境</div>
       <div class="monthbar"><select id="monthSel" aria-label="月份"></select><span id="live" hidden></span></div>
     </div>
   </div>
@@ -210,7 +238,7 @@ details[open].panel>summary::after{content:"收合"}
   <div class="main">
     <section class="panel" aria-label="月曆">
       <h2 class="ptitle" style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="8.5" cy="14.5" r="1" fill="currentColor"/></svg><span id="calTitle">月曆</span></h2>
-      <div class="dow"><div>日</div><div>一</div><div>二</div><div>三</div><div>四</div><div>五</div><div>六</div></div>
+      <div class="dow" id="dow"></div>
       <div class="grid" id="grid"><div class="loading" style="grid-column:1/-1">讀取班表中…</div></div>
       <div class="legend">
         <span><i style="background:var(--badbg);border:1px solid #F3C9C4"></i>國定假日／補假（人事行政總處 115 年辦公日曆表，今年無補班日）</span>
@@ -289,6 +317,11 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"1.3", d:"2026-10-07", items:[
+    "加入班表上所有人：主管 6 位、一期組長 16 位（早班／晚班）、二期組長 14 位",
+    "點日期後改成「一期｜二期」左右兩欄，班別代號在左、名字在右，一眼看出誰有上班",
+    "月曆每格加上星期，第一欄從當月 1 號的星期開始；假日只標「補假／雙十／光復」等短字，今天標「今天」",
+    "主管區列出全部主管，副理標示在前" ]},
   { v:"1.2", d:"2026-10-07", items:[
     "新增管理者密碼：輸入後為管理者，可調整任何人的班、不受調班規則限制",
     "管理者工具：直接修改某格班別、鎖定／解除鎖定日期（鎖定日一般人不能調班，月曆顯示鎖頭）",
@@ -353,65 +386,75 @@ function hk(m,d){ return `${m.year}-${String(m.month).padStart(2,"0")}-${String(
 function dateOf(m, d){ return new Date(m.year, m.month-1, d); }
 
 /* ---------- render ---------- */
+function holShort(h){ if(!h) return ""; if(/補假$/.test(h)) return "補假"; if(/補班$/.test(h)) return "補班"; return ({"國慶日":"雙十","臺灣光復節":"光復","開國紀念日":"元旦","和平紀念日":"228","行憲紀念日":"行憲"})[h] || h; }
 function renderGrid(){
   const c = current(); const g = $("grid");
   if(!c){ g.innerHTML = '<div class="empty-state" style="grid-column:1/-1">還沒有班表資料。</div>'; return; }
-  const { m } = c; $("calTitle").textContent = `${m.year} 年 ${m.month} 月（${m.label||""}）`;
+  const { m } = c; $("calTitle").textContent = `${m.label||""}　${m.year} 年 ${m.month} 月`;
   const first = dateOf(m,1).getDay();
+  $("dow").innerHTML = Array.from({length:7},(_,i)=>{ const w=(first+i)%7; return `<div class="${w===0?"sun":w===6?"sat":""}">${WD[w]}</div>`; }).join("");
   const now = new Date(); const isThis = now.getFullYear()===m.year && now.getMonth()+1===m.month;
   let h = "";
-  for(let i=0;i<first;i++) h += '<div class="day empty"></div>';
   for(let d=1; d<=m.days; d++){
-    const hol = HOL[`${m.year}-${String(m.month).padStart(2,"0")}-${String(d).padStart(2,"0")}`];
-    const isWork = hol && hol.endsWith("補班");
-    h += `<button class="day${hol&&!isWork?" hol":""}${isWork?" mk":""}${isThis&&now.getDate()===d?" today":""}${S.sel===d?" sel":""}" data-d="${d}" aria-label="${m.month}月${d}日${hol?" "+hol:""}">
-      <span class="n"><span>${d}</span></span>${isLocked(d)?`<span class="lkw"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>`:""}${hol?`<span class="hn">${esc(hol)}</span>`:""}${(m.notes||{})[d]?`<span class="ev">${esc(m.notes[d])}</span>`:""}</button>`;
+    const w = dateOf(m,d).getDay();
+    const hol = HOL[hk(m,d)]; const isWork = hol && hol.endsWith("補班");
+    const hs = holShort(hol); const note = (m.notes||{})[d]||"";
+    const today = isThis && now.getDate()===d;
+    let lab = "";
+    if(hol) lab += `<span class="hn">${esc(hs)}</span>`;
+    if(note && note!==hs) lab += `<span class="ev">${esc(note)}</span>`;
+    if(today) lab += `<span class="td">今天</span>`;
+    h += `<button class="day${hol&&!isWork?" hol":""}${isWork?" mk":""}${today?" today":""}${S.sel===d?" sel":""}" data-d="${d}" aria-label="${m.month}月${d}日 週${WD[w]}${hol?" "+hol:""}">
+      ${isLocked(d)?`<span class="lkw"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>`:""}<span class="n">${d}</span><span class="w${w===0?" sun":w===6?" sat":""}">${WD[w]}</span>${lab}</button>`;
   }
   g.innerHTML = h;
 }
 
 const ICON_BADGE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l7 3v5c0 4.5-3 8.2-7 10-4-1.8-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg>';
-const ICON_TEAM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.6"/><path d="M15.5 14.3c3 .2 5.5 2.6 5.5 5.7"/></svg>';
 const isMain = i => i.work && (i.shift==="K6" || i.shift==="L2");
-function personRow(n, sub, i, cls){
-  return `<div class="row${i.off?" isoff":""}${i.fd&&!i.off?" isfd":""}"><span class="av">${esc(n[0])}</span><button type="button" class="nm call" data-n="${esc(n)}">${n}</button><span class="gp">${sub}</span><span class="pill ${cls}">${esc(i.shift||"休")}</span><span class="star">${i.fd&&!i.off?"★":""}</span></div>`;
+const badgeCls = i => i.off ? "off" : i.fd ? "fd" : i.l9 ? "l9" : isMain(i) ? "w" : "oth";
+function personLine(n, i, sub){
+  return `<div class="pl${i.off?" isoff":""}"><span class="bd ${badgeCls(i)}">${esc(i.shift||"休")}</span><span class="pn"><button type="button" class="call" data-n="${esc(n)}">${n}</button>${sub?`<small>${sub}</small>`:""}</span><span class="star">${i.fd&&!i.off?"★":""}</span></div>`;
 }
 function renderDetail(){
   const c = current(); const box = $("detail");
   if(!c || !S.sel){ box.innerHTML = '<div class="empty-state">點月曆上的日期，看當天班別。</div>'; return; }
   const { m, cells } = c; const d = S.sel;
-  const wd = WD[dateOf(m,d).getDay()]; const hol = HOL[hk(m,d)];
-  let h = `<div class="dhead${hol?" h":""}"><div class="cal"><b>${m.month}月</b><span>${d}</span></div><div><div class="wd">星期${wd}</div><div class="tags">${hol?`<span class="tag red">${esc(hol)}</span>`:""}${(m.notes||{})[d]?`<span class="tag">${esc(m.notes[d])}</span>`:""}${isLocked(d)?`<span class="lkn"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>已鎖定・不能調班</span>`:""}</div></div></div>`;
-  h += `<div class="sec">${ICON_BADGE}當值副理 / 副理班別</div>`;
+  const wd = WD[dateOf(m,d).getDay()]; const hol = HOL[hk(m,d)]; const note=(m.notes||{})[d]||"";
+  let h = `<div class="dh"><span class="dt${hol?" red":""}">${m.month}月${d}日</span><span class="dw">週${wd}</span>${hol?`<span class="tag red">${esc(hol)}</span>`:""}${note?`<span class="tag">${esc(note)}</span>`:""}${isLocked(d)?`<span class="lkn"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>已鎖定・不能調班</span>`:""}</div>`;
+  // 主管
+  const mgrs = m.order.filter(n=>m.people[n]?.kind==="mgr");
+  const mOrder = [...VICE.filter(n=>mgrs.includes(n)), ...mgrs.filter(n=>!VICE.includes(n))];
+  h += `<div class="sec">${ICON_BADGE}主管</div><div class="mgrs">`;
   let anyVice = false;
-  for(const n of VICE){
-    const p = m.people[n]; if(!p) continue;
-    const i = info(p, cells[n][d]); if(i.work) anyVice = true;
-    h += personRow(n, esc(p.title||"副理"), {...i, shift: i.work ? i.shift : (i.shift||"休")}, i.work ? "w" : "off");
+  for(const n of mOrder){
+    const p = m.people[n]; const i = info(p, cells[n][d]);
+    if(VICE.includes(n) && i.work) anyVice = true;
+    const ii = {...i, off: !i.work, shift: i.work ? i.shift : (i.shift||"休")};
+    h += `<div class="mg${VICE.includes(n)?" vice":""}">${personLine(n, ii, esc((VICE.includes(n)?"副理・":"")+(p.title||"")+(p.area?"・"+p.area:"")))}</div>`;
   }
+  h += `</div>`;
   if(!anyVice){
     const found = {L2:[],K6:[]};
-    for(const [n,p] of Object.entries(m.people)){
-      if(p.kind!=="mgr" || VICE.includes(n)) continue;
-      const i = info(p, cells[n][d]);
-      if(i.work && found[i.shift]) found[i.shift].push(`${n}（${p.title||""}）`);
-    }
-    h += `<div class="fallback">兩位副理今天都沒班，當日主管：<br><b>L2</b>　${found.L2.join("、")||"無"}<br><b>K6</b>　${found.K6.join("、")||"無"}</div>`;
+    for(const n of mgrs){ if(VICE.includes(n)) continue; const i = info(m.people[n], cells[n][d]); if(i.work && found[i.shift]) found[i.shift].push(n); }
+    h += `<div class="fallback">兩位副理今天都沒班，當日主管：<b>L2</b> ${found.L2.join("、")||"無"}　<b>K6</b> ${found.K6.join("、")||"無"}</div>`;
   }
-  h += `<div class="sec">${ICON_TEAM}營三部二期出入境組長</div>`;
-  h += `<div class="thead" role="row"><span></span><span>名字</span><span>備註</span><span class="c">班別</span><span class="c fd">★值星</span></div>`;
-  const groups = [];
-  for(const n of m.order){ const p = m.people[n]; if(p?.kind==="lead" && !groups.includes(p.group)) groups.push(p.group); }
-  for(const g of groups){
-    const ppl = m.order.filter(n=>m.people[n]?.kind==="lead" && m.people[n].group===g).map(n=>({n, p:m.people[n], i:info(m.people[n], cells[n][d])}));
-    const ordered = [...ppl.filter(x=>isMain(x.i)), ...ppl.filter(x=>!isMain(x.i))];
-    h += `<div class="grp">${esc(g)}</div><div>`;
-    for(const {n,i} of ordered){
-      const cls = i.off ? "off" : i.fd ? "fd" : i.l9 ? "l9" : isMain(i) ? "w" : "oth";
-      h += personRow(n, i.note?esc(i.note):"", i, cls);
+  // 一期｜二期
+  h += `<div class="hint" style="margin:12px 0 6px">★＝值星（FD）　點名字可撥打電話</div><div class="phases">`;
+  for(const ph of ["一期","二期"]){
+    const names = m.order.filter(n=>m.people[n]?.kind==="lead" && m.people[n].phase===ph);
+    if(!names.length) continue;
+    const groups = []; names.forEach(n=>{ const g=m.people[n].group; if(!groups.includes(g)) groups.push(g); });
+    h += `<section class="phase ${ph==="一期"?"p1":"p2"}"><h3><i></i>${ph}</h3>`;
+    for(const g of groups){
+      const ppl = names.filter(n=>m.people[n].group===g).map(n=>({n, p:m.people[n], i:info(m.people[n], cells[n][d])}));
+      const ordered = [...ppl.filter(x=>isMain(x.i)), ...ppl.filter(x=>!isMain(x.i))];
+      h += `<div class="grp">${esc(g)}</div>`;
+      for(const {n,p,i} of ordered) h += personLine(n, i, esc([ph==="一期"?p.post:"", i.note].filter(Boolean).join("・")));
     }
-    h += `</div>`;
+    h += `</section>`;
   }
+  h += `</div>`;
   box.innerHTML = h;
 }
 function fmtTime(iso){ const t=new Date(iso); if(isNaN(t)) return ""; const p=x=>String(x).padStart(2,"0"); return `${t.getMonth()+1}/${t.getDate()} ${p(t.getHours())}:${p(t.getMinutes())}`; }
@@ -442,7 +485,7 @@ async function delSwap(at){
 /* ---------- settings ---------- */
 function fillSelectors(){
   const m = S.months[S.mk]; if(!m) return;
-  const names = ["鄭宇辰","曾羽菲", ...m.order.filter(n=>m.people[n]?.kind==="lead")];
+  const names = [...VICE, ...m.order];
   const uniq = [...new Set(names)].filter(n=>m.people[n]);
   const nameOpts = uniq.map(n=>`<option value="${n}">${n}</option>`).join("");
   const keepWho = $("who").value;
