@@ -28,6 +28,7 @@ body{background:var(--bg);color:var(--ink);font-family:var(--sans);font-size:15p
 .hero{position:relative;border-radius:16px;overflow:hidden;background:#3A1585;min-height:132px;box-shadow:0 6px 20px rgba(60,25,130,.18)}
 .hero svg{position:absolute;inset:0;width:100%;height:100%}
 .hero .txt{position:relative;padding:20px 20px 18px;display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;min-height:132px}
+@media (max-width:520px){.hero,.hero .txt{min-height:104px}.hero .txt{padding:14px 14px 12px}}
 .hero .k{color:#FFFFFF;font-weight:900;font-size:clamp(18px,4.4vw,26px);letter-spacing:.04em;line-height:1.25;text-shadow:0 1px 8px rgba(10,25,45,.35)}
 .hero .k small{display:table;font-size:12px;font-weight:700;letter-spacing:.16em;color:#2A1260;background:linear-gradient(90deg,#F7DE8F,#D4A23A);padding:2px 10px;border-radius:4px;margin-bottom:6px;transform:skewX(-8deg)}
 .monthbar{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
@@ -98,6 +99,20 @@ button:disabled{opacity:.45;cursor:not-allowed}
 .quad .ph{font-size:11.5px;font-weight:700;color:var(--mute);letter-spacing:.12em;margin:8px 0 0;padding-bottom:2px;border-bottom:1px dashed var(--line)}
 .quad .none{font-size:13px;color:var(--off);padding:12px 2px}
 .quad.zout .pl .ac{color:#8A6418;background:var(--goldbg)}
+.quad h3 .qn{margin-left:auto;font-family:var(--mono);font-size:12px;font-weight:700;background:rgba(255,255,255,.22);border-radius:999px;padding:0 8px}
+.offq .quad h3{background:#9AA0AE !important;color:#FFFFFF}
+.offq .quad.night h3{background:#7A8090 !important}
+.offq .quad{border-color:var(--line);background:var(--soft)}
+.offq .pl .ac{color:var(--off) !important;background:var(--card) !important}
+.sec.offsec{color:var(--mute);margin-top:16px}
+.sec .cnt{font-size:12px;font-weight:500;color:var(--mute);letter-spacing:0}
+.dh{position:sticky;top:env(safe-area-inset-top,0px);z-index:3;background:var(--card);margin:-4px -16px 0;padding:8px 16px 10px}
+.dh .nav{appearance:none;border:1px solid var(--line);background:var(--soft);border-radius:10px;min-height:34px;width:34px;padding:0;font-size:18px;line-height:1;color:var(--navy);cursor:pointer}
+.dh .nav:disabled{opacity:.3}
+.dh{flex-wrap:nowrap;align-items:center;justify-content:space-between}
+.dh .nav{flex:none}
+.dmid{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:center;gap:4px 10px;min-width:0}
+@media (max-width:520px){.dh .dt{font-size:22px}.dh .dw{font-size:14px}}
 .offbox{margin-top:10px;border:1px dashed var(--off);border-radius:16px;padding:8px 12px;background:var(--soft)}
 .offbox h3{display:flex;align-items:center;gap:8px;margin:0 0 4px;font-size:15px;color:var(--mute)}
 .offbox .cnt{font-size:12px;font-weight:500}
@@ -339,6 +354,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"2.0", d:"2026-10-07", items:[ "休假名單也改成四宮格（入境早班／出境早班／入境晚班／出境晚班），格內再分一期、二期", "每格標題右側顯示人數", "日期列固定在畫面上方，並加上「‹ 前一天／後一天 ›」切換", "手機版頂部橫幅縮小" ]},
   { v:"1.9", d:"2026-10-07", items:[ "點日期後改成四宮格：入境早班｜出境早班／入境晚班｜出境晚班，每格內再分一期、二期", "主管維持在最上方；休假的人集中在四宮格下方的「休假」區", "加上圖例（值星、上班、大夜、休假）與整體版面整理" ]},
   { v:"1.8", d:"2026-10-07", items:[ "名字旁顯示區域代號（YA／YB／YN／YS／SA／SD）", "休假的人統一移到各期最下方的「休假」區" ]},
   { v:"1.7", d:"2026-10-07", items:[ "主畫面／書籤小圖示改為「營三部 班表」字樣，主畫面名稱改為「營三部班表」" ]},
@@ -466,7 +482,7 @@ function renderDetail(){
   if(!c || !S.sel){ box.innerHTML = '<div class="empty-state">點月曆上的日期，看當天班別。</div>'; return; }
   const { m, cells } = c; const d = S.sel;
   const wd = WD[dateOf(m,d).getDay()]; const hol = HOL[hk(m,d)]; const note=(m.notes||{})[d]||"";
-  let h = `<div class="dh"><span class="dt${hol?" red":""}">${m.month}月${d}日</span><span class="dw">週${wd}</span>${hol?`<span class="tag red">${esc(hol)}</span>`:""}${note?`<span class="tag">${esc(note)}</span>`:""}${isLocked(d)?`<span class="lkn"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>已鎖定・不能調班</span>`:""}</div>`;
+  let h = `<div class="dh"><button type="button" class="nav" data-go="-1" aria-label="前一天"${d<=1?" disabled":""}>‹</button><div class="dmid"><span class="dt${hol?" red":""}">${m.month}月${d}日</span><span class="dw">週${wd}</span>${hol?`<span class="tag red">${esc(hol)}</span>`:""}${note?`<span class="tag">${esc(note)}</span>`:""}${isLocked(d)?`<span class="lkn"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>已鎖定・不能調班</span>`:""}</div><button type="button" class="nav" data-go="1" aria-label="後一天"${d>=m.days?" disabled":""}>›</button></div>`;
   // 主管
   const mgrs = m.order.filter(n=>m.people[n]?.kind==="mgr");
   const mOrder = [...VICE.filter(n=>mgrs.includes(n)), ...mgrs.filter(n=>!VICE.includes(n))];
@@ -487,27 +503,28 @@ function renderDetail(){
   // 入境／出境 × 早班／晚班
   h += `<div class="keys"><span><b class="kfd">(FD)</b>值星</span><span><i class="kb w"></i>上班</span><span><i class="kb l9"></i>大夜 L9</span><span><i class="kb off"></i>休假</span><span>點名字可撥打電話</span></div>`;
   const leads = m.order.filter(n=>m.people[n]?.kind==="lead").map(n=>({n, p:m.people[n], a:area(m.people[n]), i:info(m.people[n], cells[n][d])}));
+  const ICON_MOON='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>';
+  const ICON_SUN='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>';
   const QUADS = [["入境日班","入境早班","zin",0],["出境日班","出境早班","zout",0],["入境夜班","入境晚班","zin",1],["出境夜班","出境晚班","zout",1]];
-  h += `<div class="quads">`;
-  for(const [g,label,zc,night] of QUADS){
-    const ppl = leads.filter(x=>x.a.group===g && !x.i.off);
-    h += `<section class="quad ${zc}${night?" night":""}"><h3>${night?'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4a8 8 0 1 0 10.5 10.5z"/></svg>':'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4.2"/><path d="M12 2.5v2.2M12 19.3v2.2M2.5 12h2.2M19.3 12h2.2M5.3 5.3l1.6 1.6M17.1 17.1l1.6 1.6M5.3 18.7l1.6-1.6M17.1 6.9l1.6-1.6"/></svg>'}${label}</h3>`;
-    if(!ppl.length) h += `<div class="none">今天沒有人上班</div>`;
-    for(const ph of ["一期","二期"]){
-      const pp = ppl.filter(x=>x.a.phase===ph); if(!pp.length) continue;
-      const ordered = [...pp.filter(x=>isMain(x.i)), ...pp.filter(x=>!isMain(x.i))];
-      h += `<div class="ph">${ph}</div>`;
-      for(const {n,a,i} of ordered) h += personLine(n, i, esc([a.team, i.note].filter(Boolean).join("・")), a.code);
+  const quads = (list, off) => {
+    let q = `<div class="quads${off?" offq":""}">`;
+    for(const [g,label,zc,night] of QUADS){
+      const ppl = list.filter(x=>x.a.group===g);
+      q += `<section class="quad ${zc}${night?" night":""}"><h3>${night?ICON_MOON:ICON_SUN}${label}${ppl.length?`<span class="qn">${ppl.length}</span>`:""}</h3>`;
+      if(!ppl.length) q += `<div class="none">${off?"無人休假":"今天沒有人上班"}</div>`;
+      for(const ph of ["一期","二期"]){
+        const pp = ppl.filter(x=>x.a.phase===ph); if(!pp.length) continue;
+        const ordered = off ? pp : [...pp.filter(x=>isMain(x.i)), ...pp.filter(x=>!isMain(x.i))];
+        q += `<div class="ph">${ph}</div>`;
+        for(const {n,a,i} of ordered) q += personLine(n, i, esc([a.team, i.note].filter(Boolean).join("・")), a.code);
+      }
+      q += `</section>`;
     }
-    h += `</section>`;
-  }
-  h += `</div>`;
+    return q + `</div>`;
+  };
+  h += quads(leads.filter(x=>!x.i.off), false);
   const offs = leads.filter(x=>x.i.off);
-  if(offs.length){
-    h += `<section class="offbox"><h3>休假<span class="cnt">${offs.length} 人</span></h3><div class="offgrid">`;
-    for(const ph of ["一期","二期"]) for(const {n,a,i} of offs.filter(x=>x.a.phase===ph)) h += personLine(n, i, esc(a.phase+a.zone+(a.shift==="日班"?"早班":"晚班")+(a.team?"・"+a.team:"")), a.code);
-    h += `</div></section>`;
-  }
+  if(offs.length) h += `<div class="sec offsec">休假<span class="cnt">${offs.length} 人</span></div>` + quads(offs, true);
   box.innerHTML = h;
 }
 function fmtTime(iso){ const t=new Date(iso); if(isNaN(t)) return ""; const p=x=>String(x).padStart(2,"0"); return `${t.getMonth()+1}/${t.getDate()} ${p(t.getHours())}:${p(t.getMinutes())}`; }
@@ -730,7 +747,7 @@ function openCall(n){
   $("shMsg").textContent = "若按「撥打」沒有反應，請複製號碼後撥打。";
   $("sheet").hidden = false;
 }
-$("detail").addEventListener("click", e=>{ const b = e.target.closest(".call"); if(b) openCall(b.dataset.n); });
+$("detail").addEventListener("click", e=>{ const g = e.target.closest(".nav[data-go]"); if(g){ const m=S.months[S.mk]; const nd=S.sel+Number(g.dataset.go); if(nd>=1 && nd<=m.days){ S.sel=nd; renderGrid(); renderDetail(); if(S.user){ $("aDay").value=S.sel; showCur(); } } return; } const b = e.target.closest(".call"); if(b) openCall(b.dataset.n); });
 $("shClose").addEventListener("click", ()=>{ $("sheet").hidden = true; });
 $("sheet").addEventListener("click", e=>{ if(e.target.id==="sheet") $("sheet").hidden = true; });
 document.addEventListener("keydown", e=>{ if(e.key==="Escape") $("sheet").hidden = true; });
