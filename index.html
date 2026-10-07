@@ -2,6 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
+<script>try{var q=new URLSearchParams(location.search).get("theme");if(q)localStorage.setItem("roster_theme",q);if((q||localStorage.getItem("roster_theme"))==="cyber")document.documentElement.classList.add("cyber");}catch(e){}</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2064%2064%22%3E%3Crect%20width%3D%2264%22%20height%3D%2264%22%20rx%3D%2214%22%20fill%3D%22%230E1116%22/%3E%3Crect%20x%3D%223%22%20y%3D%223%22%20width%3D%2258%22%20height%3D%2258%22%20rx%3D%2211%22%20fill%3D%22none%22%20stroke%3D%22%23DDB566%22%20stroke-width%3D%223%22/%3E%3Ctext%20x%3D%2232%22%20y%3D%2229%22%20font-size%3D%2217%22%20text-anchor%3D%22middle%22%20fill%3D%22%23DDB566%22%20font-family%3D%22sans-serif%22%20font-weight%3D%22700%22%3E%E7%87%9F%E4%B8%89%E9%83%A8%3C/text%3E%3Ctext%20x%3D%2232%22%20y%3D%2250%22%20font-size%3D%2217%22%20text-anchor%3D%22middle%22%20fill%3D%22%23DDB566%22%20font-family%3D%22sans-serif%22%20font-weight%3D%22700%22%3E%E7%8F%AD%E8%A1%A8%3C/text%3E%3C/svg%3E">
@@ -253,6 +254,63 @@ details[open].panel>summary::after{content:"收合"}
 .offdet>summary .tg{font-size:13px;font-weight:700}
 .offdet .ph{font-size:13px;font-weight:900;color:var(--ink)}
 @media (max-width:520px){.pl .call{font-size:15.5px;letter-spacing:0}.pl .ac{font-size:10.5px;padding:0 4px}.bd{font-size:13px;border-width:2px}.quad h3{font-size:16px}.day .n{font-size:19px}.day .w{font-size:11px}.day .hn,.day .td{font-size:9.5px}.dh .dt{font-size:25px}.dh .dw{font-size:15px}}
+/* v2.3 賽博風格（?theme=cyber 開啟，?theme=light 換回） */
+html.cyber{--bg:#07060F;--card:#0F0D1E;--soft:#16132B;--line:#2B2650;--ink:#EAF6FF;--mute:#9AA2C8;--off:#5E5A80;--navy:#22E6FF;--nightbg:#0A2A35;--gold:#FFD23F;--goldbg:#2A2310;--bad:#FF3D6E;--badbg:#2A0D1A;--ok:#2BFF88;color-scheme:dark}
+html.cyber body{background:radial-gradient(900px 500px at 100% -10%,rgba(255,43,214,.16),transparent 60%),radial-gradient(800px 500px at -10% 30%,rgba(34,230,255,.10),transparent 60%),repeating-linear-gradient(0deg,rgba(34,230,255,.035) 0 1px,transparent 1px 32px),repeating-linear-gradient(90deg,rgba(34,230,255,.035) 0 1px,transparent 1px 32px),#07060F;background-attachment:fixed}
+html.cyber .hero{border-radius:6px;background:linear-gradient(180deg,transparent 35%,rgba(7,6,15,.85)),repeating-linear-gradient(90deg,rgba(34,230,255,.20) 0 1px,transparent 1px 44px),repeating-linear-gradient(0deg,rgba(255,43,214,.16) 0 1px,transparent 1px 22px),radial-gradient(120% 160% at 88% 0%,#4A0C6B 0,#120A2E 55%,#07060F 100%);border:1px solid rgba(34,230,255,.45);box-shadow:0 0 24px rgba(34,230,255,.18),inset 0 0 40px rgba(255,43,214,.15)}
+html.cyber .hero svg{display:none}
+html.cyber .hero::before{content:"SYS//ONLINE ▮ TPE-T2 ▮ SHIFT.GRID";position:absolute;top:8px;right:12px;font:600 10px/1 var(--mono);letter-spacing:.18em;color:#22E6FF;opacity:.8}
+html.cyber .hero .k{color:#FFFFFF;text-shadow:2px 0 #FF2BD6,-2px 0 #22E6FF,0 0 18px rgba(34,230,255,.45)}
+html.cyber .hero .k small{color:#07060F;background:#F5E43A;text-shadow:none;border-radius:0}
+html.cyber .monthbar select{background:#0F0D1E;color:#22E6FF;border:1px solid #22E6FF;box-shadow:0 0 10px rgba(34,230,255,.35)}
+html.cyber .stripe{height:3px;border-radius:0;background:linear-gradient(90deg,#22E6FF,#FF2BD6 50%,#F5E43A);box-shadow:0 0 12px rgba(255,43,214,.6)}
+html.cyber .panel,html.cyber .gcard,html.cyber .sheet{border-radius:6px;border:1px solid rgba(34,230,255,.22);box-shadow:0 0 0 1px rgba(255,43,214,.06),0 0 22px rgba(34,230,255,.06)}
+html.cyber .ptitle{font-family:var(--mono);letter-spacing:.1em}
+html.cyber select,html.cyber input{background:var(--soft);color:var(--ink);border-color:var(--line)}
+html.cyber button{background:var(--soft);color:var(--ink);border-color:var(--line)}
+html.cyber button.primary{background:#22E6FF;border-color:#22E6FF;color:#04121A;box-shadow:0 0 12px rgba(34,230,255,.5)}
+html.cyber .day{background:#120F24;border-color:#2B2650;border-radius:4px}
+html.cyber .day:hover{border-color:#22E6FF;box-shadow:0 0 10px rgba(34,230,255,.35)}
+html.cyber .day.hol{background:#2A0D1A;border-color:#7A1A3A}
+html.cyber .day.today{background:#F5E43A;border-color:#F5E43A;box-shadow:0 0 14px rgba(245,228,58,.7)}
+html.cyber .day.today .n,html.cyber .day.today .w,html.cyber .day.today .td{color:#07060F}
+html.cyber .day.sel{border-color:#FF2BD6;box-shadow:0 0 0 2px #FF2BD6 inset,0 0 14px rgba(255,43,214,.5)}
+html.cyber .day.sel:not(.today):not(.hol){background:#1A0F2E}
+html.cyber .day .ev,html.cyber .adm{background:#22E6FF;color:#04121A}
+html.cyber .call{color:#22E6FF;text-decoration-color:rgba(34,230,255,.6)}
+html.cyber .pl .ac{background:#22E6FF;color:#04121A}
+html.cyber .quad.zout .pl .ac{background:#FF2BD6;color:#16001C}
+html.cyber .pl.isoff .ac,html.cyber .quad.zout .pl.isoff .ac,html.cyber .offq .pl .ac{background:#1E1B38 !important;color:#8C88AE !important}
+html.cyber .pl.isoff .call{color:#77739A}
+html.cyber .quad{border-radius:6px;background:#0C0A1A}
+html.cyber .quad.zin{border-color:rgba(34,230,255,.45)} html.cyber .quad.zout{border-color:rgba(255,43,214,.45)}
+html.cyber .quad h3{color:#04121A;background:#22E6FF;text-transform:uppercase}
+html.cyber .quad.zout h3{background:#FF2BD6;color:#16001C}
+html.cyber .quad.night.zin h3{background:#0A3442;color:#22E6FF;border-bottom:2px solid #22E6FF}
+html.cyber .quad.night.zout h3{background:#3E0A3A;color:#FF7BE8;border-bottom:2px solid #FF2BD6}
+html.cyber .quad h3 .qn{background:rgba(0,0,0,.25)}
+html.cyber .quad .ph{color:#22E6FF;border-bottom-color:#2B2650}
+html.cyber .quad.zout .ph{color:#FF7BE8}
+html.cyber .offq .quad h3{background:#2A2748 !important;color:#C9CCE6;border-bottom:0}
+html.cyber .offq .quad{background:#0C0A1A}
+html.cyber .bd{background:transparent;border-color:#22E6FF;color:#22E6FF;border-radius:4px}
+html.cyber .bd.fd{background:#F5E43A;border-color:#F5E43A;color:#07060F;box-shadow:0 0 10px rgba(245,228,58,.55)}
+html.cyber .bd.l9{background:#8C5CFF;border-color:#8C5CFF;color:#07060F}
+html.cyber .bd.oth{border-color:#F5E43A;color:#F5E43A}
+html.cyber .bd.off{border-color:#5E5A80;color:#8C88AE}
+html.cyber .kb{border-color:#22E6FF} html.cyber .kb.l9{background:#8C5CFF;border-color:#8C5CFF}
+html.cyber .keys .kfd,html.cyber .star,html.cyber .grp,html.cyber .admbox h4,html.cyber .bd.oth{color:#F5E43A}
+html.cyber .mg{border-radius:6px}
+html.cyber .mg.vice{border-color:#22E6FF;background:#0A2A35;box-shadow:0 0 12px rgba(34,230,255,.25)}
+html.cyber .dhead .cal b{color:#04121A}
+html.cyber .tag{color:#F5E43A}
+html.cyber .offdet{border-radius:6px;border-color:#3A3566;background:#0C0A1A}
+html.cyber .hist .del{border-color:#7A1A3A;background:transparent}
+html.cyber .sec,html.cyber .ptitle[style]{text-shadow:0 0 10px rgba(34,230,255,.45)}
+html.cyber .dh .dt{text-shadow:0 0 12px rgba(34,230,255,.35)}
+html.cyber .dh .dt.red{text-shadow:0 0 12px rgba(255,61,110,.5)}
+@media (max-width:520px){html.cyber .hero::before{top:auto;bottom:8px;right:10px;font-size:8px;letter-spacing:.12em}.bd{min-width:2.9em;padding:3px 3px}.star{font-size:9.5px;letter-spacing:-.03em}.pl{gap:4px}}
+@media (max-width:420px){.pl .call{font-size:15px}.pl .nmr{flex-wrap:wrap;row-gap:1px}}
 </style>
 </head>
 <body>
@@ -389,6 +447,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"2.3", d:"2026-10-07", items:[ "新增賽博風格（試用）：網址加 ?theme=cyber 開啟，會記住；加 ?theme=light 換回原本樣式" ]},
   { v:"2.2", d:"2026-10-07", items:[ "整體文字加粗放大、提高對比：名字、班別、區域標籤、日期都更醒目", "區域標籤（YA／SD…）改成實色底白字" ]},
   { v:"2.1", d:"2026-10-07", items:[ "休假的主管（理級等）也移到下方休假區，主管區只列當天有上班的人", "休假名單（主管＋組長）預設收合，點「休假名單」展開", "移除李宇軒（SA）的資料" ]},
   { v:"2.0", d:"2026-10-07", items:[ "休假名單也改成四宮格（入境早班／出境早班／入境晚班／出境晚班），格內再分一期、二期", "每格標題右側顯示人數", "日期列固定在畫面上方，並加上「‹ 前一天／後一天 ›」切換", "手機版頂部橫幅縮小" ]},
