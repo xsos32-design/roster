@@ -312,19 +312,50 @@ html.cyber .dh .dt.red{text-shadow:0 0 12px rgba(255,61,110,.5)}
 @media (max-width:520px){html.cyber .hero::before{top:auto;bottom:8px;right:10px;font-size:8px;letter-spacing:.12em}.bd{min-width:2.9em;padding:3px 3px}.star{font-size:9.5px;letter-spacing:-.03em}.pl{gap:4px}}
 @media (max-width:420px){.pl .call{font-size:15px}.pl .nmr{flex-wrap:wrap;row-gap:1px}}
 /* v3.0 賽博版預設、照片橫幅（Unsplash：Tsukada Kazuhiro）、Lucide 圖示 */
-html.cyber .hero{background:linear-gradient(90deg,rgba(7,6,15,.94) 0%,rgba(7,6,15,.6) 45%,rgba(7,6,15,.1) 100%),linear-gradient(180deg,rgba(255,43,214,.10),rgba(34,230,255,.08)),repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px),url("https://images.unsplash.com/photo-1664188578262-08c57ebf69ae?auto=format&fit=crop&q=70&w=1600") center 62%/cover no-repeat,#07060F}
 html.cyber .hero,html.cyber .hero .txt{min-height:168px}
-@media (max-width:520px){html.cyber .hero{background-image:linear-gradient(90deg,rgba(7,6,15,.9) 0%,rgba(7,6,15,.45) 70%,rgba(7,6,15,.2) 100%),repeating-linear-gradient(0deg,rgba(0,0,0,.18) 0 1px,transparent 1px 3px),url("https://images.unsplash.com/photo-1664188578262-08c57ebf69ae?auto=format&fit=crop&q=70&w=900")}html.cyber .hero,html.cyber .hero .txt{min-height:128px}}
 .gimg{width:100%;height:120px;object-fit:cover;border-radius:10px;display:block}
 html.cyber .gimg{border-radius:4px;box-shadow:0 0 18px rgba(34,230,255,.3)}
 .swapicon{color:var(--gold)} .swapicon svg{width:26px;height:26px}
+/* v3.1 乾淨版橫幅、月份切換 */
+.hero{background:linear-gradient(135deg,#3A1585,#5B24C2);min-height:0}
+.hero .txt{min-height:0;padding:20px 22px;align-items:center}
+.hero .k{text-shadow:none}
+.hero .k small{display:block;background:none;transform:none;padding:0;margin:0 0 6px;border-radius:0;font:600 11px/1.2 var(--mono);letter-spacing:.26em;color:rgba(255,255,255,.7)}
+.hero .k b{display:block;font-size:clamp(32px,8.5vw,46px);font-weight:900;letter-spacing:.1em;line-height:1.1;color:#FFFFFF}
+.hero .k .sub{display:block;margin-top:8px;font-size:15px;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.75)}
+.monthbar{flex-wrap:nowrap;gap:0;border:1px solid rgba(255,255,255,.35);border-radius:14px;overflow:hidden;background:rgba(0,0,0,.18)}
+.monthbar .mnav{min-height:48px;width:46px;padding:0;border:0;border-radius:0;background:transparent;color:#FFFFFF;font-size:24px;line-height:1}
+.monthbar .mnav:disabled{opacity:.25}
+.monthbar .mpick{position:relative;border-inline:1px solid rgba(255,255,255,.2)}
+.monthbar .mpick select{appearance:none;-webkit-appearance:none;background:transparent;border:0;border-radius:0;min-height:48px;padding:0 30px 0 16px;font-size:19px;font-weight:900;letter-spacing:.06em;color:#FFFFFF;box-shadow:none;cursor:pointer}
+.monthbar .mpick::after{content:"";position:absolute;right:13px;top:50%;width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-70%) rotate(45deg);color:#FFFFFF;pointer-events:none}
+.monthbar .mpick select option{color:#120A24;background:#FFFFFF}
+.monthbar #live{margin:0 8px}
+@media (max-width:560px){.hero .txt{flex-direction:column;align-items:stretch;gap:16px;padding:18px 16px}.monthbar{justify-content:space-between}.monthbar .mpick{flex:1}.monthbar .mpick select{width:100%;text-align:center;text-align-last:center}}
+html.cyber .hero{background:linear-gradient(135deg,#17122E 0%,#0F0D1E 55%,#160C26 100%);border:1px solid rgba(34,230,255,.28);border-radius:10px;box-shadow:0 0 0 1px rgba(255,43,214,.05)}
+html.cyber .hero::before{content:"";position:absolute;left:0;top:18px;bottom:18px;width:4px;border-radius:0 4px 4px 0;background:linear-gradient(180deg,#22E6FF,#FF2BD6)}
+html.cyber .hero,html.cyber .hero .txt{min-height:0}
+html.cyber .hero .k{text-shadow:none}
+html.cyber .hero .k small{color:#22E6FF;background:none}
+html.cyber .hero .k b{color:#FFFFFF}
+html.cyber .hero .k .sub{color:var(--mute)}
+html.cyber .monthbar{border-color:rgba(34,230,255,.45);background:#0B0918}
+html.cyber .monthbar .mnav{color:#22E6FF;background:transparent;box-shadow:none}
+html.cyber .monthbar .mpick{border-color:rgba(34,230,255,.2)}
+html.cyber .monthbar .mpick select{background:transparent;color:#FFFFFF;border:0;box-shadow:none}
+html.cyber .monthbar .mpick::after{color:#22E6FF}
+html.cyber .monthbar .mpick select option{color:#EAF6FF;background:#0F0D1E}
+.gico{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;color:var(--navy);background:var(--nightbg)}
+.gico svg{width:30px;height:30px}
+html.cyber .gico{box-shadow:0 0 18px rgba(34,230,255,.3)}
+@media (max-width:520px){.mgrs{grid-template-columns:repeat(2,minmax(0,1fr))}}
 </style>
 </head>
 <body>
 
 <div class="gate" id="gate" hidden>
   <div class="gcard">
-    <img class="gimg" src="https://images.unsplash.com/photo-1664188578262-08c57ebf69ae?auto=format&fit=crop&q=70&w=720" alt="" loading="eager">
+    <div class="gico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg></div>
     <h1>營三部 · 一、二期出入境班表</h1>
     <p class="hint">請輸入密碼查看班表（這台裝置只要輸入一次）</p>
     <div class="frow" style="justify-content:center"><input id="gpw" type="password" inputmode="numeric" autocomplete="off" aria-label="密碼" style="width:9em;text-align:center"><button class="primary" id="gateBtn">進入</button></div>
@@ -333,41 +364,9 @@ html.cyber .gimg{border-radius:4px;box-shadow:0 0 18px rgba(34,230,255,.3)}
 </div>
 <div class="wrap" id="app" hidden>
   <div class="hero">
-    <svg viewBox="0 0 800 140" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
-      <defs>
-        <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#3A1585"/><stop offset=".6" stop-color="#5B24C2"/><stop offset="1" stop-color="#7A3BE0"/></linearGradient>
-        <linearGradient id="gd" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#F7DE8F"/><stop offset=".5" stop-color="#D4A23A"/><stop offset="1" stop-color="#F3D27A"/></linearGradient>
-      </defs>
-      <rect width="800" height="140" fill="url(#sky)"/>
-      <g opacity=".9">
-        <path d="M560 140 L720 0 L748 0 L588 140 Z" fill="url(#gd)"/>
-        <path d="M610 140 L770 0 L782 0 L622 140 Z" fill="#E6EC4E" opacity=".85"/>
-        <path d="M650 140 L800 8 L800 40 L686 140 Z" fill="url(#gd)" opacity=".7"/>
-        <path d="M720 140 L800 70 L800 92 L746 140 Z" fill="#2B6BE0" opacity=".7"/>
-      </g>
-      <g fill="#FFFFFF" opacity=".12">
-        <ellipse cx="160" cy="34" rx="60" ry="10"/><ellipse cx="200" cy="26" rx="34" ry="10"/><ellipse cx="450" cy="50" rx="70" ry="9"/>
-      </g>
-      <g class="plane">
-        <path d="M300 74 L500 44" stroke="#F7DE8F" stroke-opacity=".6" stroke-width="2" stroke-dasharray="2 7" fill="none"/>
-        <g transform="translate(500 42) rotate(-8)" fill="#FFFFFF">
-          <path d="M-46 0 C-46 -5 -40 -7 -30 -7 L34 -7 C44 -7 52 -3 54 0 C52 3 44 5 34 5 L-30 5 C-40 5 -46 4 -46 0 Z"/>
-          <path d="M6 -2 L-14 -30 L-4 -30 L22 -2 Z"/>
-          <path d="M6 2 L-8 22 L0 22 L18 2 Z" opacity=".85"/>
-          <path d="M-40 -3 L-48 -20 L-41 -20 L-30 -4 Z" fill="#F3D27A"/>
-          <g fill="#4A1E9E" opacity=".6"><circle cx="40" cy="-2" r="1.6"/><circle cx="32" cy="-2" r="1.6"/><circle cx="24" cy="-2" r="1.6"/><circle cx="16" cy="-2" r="1.6"/><circle cx="8" cy="-2" r="1.6"/><circle cx="0" cy="-2" r="1.6"/><circle cx="-8" cy="-2" r="1.6"/><circle cx="-16" cy="-2" r="1.6"/></g>
-        </g>
-      </g>
-      <g fill="#24095A" opacity=".85">
-        <rect x="0" y="124" width="800" height="16"/>
-        <rect x="330" y="72" width="9" height="52"/><path d="M321 60 L348 60 L344 74 L325 74 Z"/><rect x="326" y="52" width="17" height="8" rx="2"/>
-        <rect x="360" y="102" width="170" height="22" rx="3"/><path d="M360 102 Q445 86 530 102 Z"/>
-      </g>
-      <g stroke="#F7DE8F" stroke-width="2" stroke-dasharray="18 14" opacity=".6"><line x1="0" y1="132" x2="800" y2="132"/></g>
-    </svg>
     <div class="txt">
-      <div class="k"><small>TAOYUAN AIRPORT · 營業三部</small>一、二期出入境</div>
-      <div class="monthbar"><select id="monthSel" aria-label="月份"></select><span id="live" hidden></span></div>
+      <div class="k"><small>TAOYUAN AIRPORT · 幹部班表</small><b>營業三部</b><span class="sub">一期・二期　出境／入境</span></div>
+      <div class="monthbar"><button type="button" class="mnav" data-m="-1" aria-label="上個月">‹</button><span class="mpick"><select id="monthSel" aria-label="選擇月份"></select></span><button type="button" class="mnav" data-m="1" aria-label="下個月">›</button><span id="live" hidden></span></div>
     </div>
   </div>
 
@@ -433,7 +432,7 @@ html.cyber .gimg{border-radius:4px;box-shadow:0 0 18px rgba(34,230,255,.3)}
     <summary style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"/><path d="M14 2v4a2 2 0 0 0 2 2h4"/><path d="M10 9H8M16 13H8M16 17H8"/></svg>版本更新紀錄<span class="hint" id="verNow" style="margin-left:6px;font-weight:500"></span></summary>
     <ul class="hist" id="verList"></ul>
   </details>
-  <div class="foot">班表來源：營三部幹部班表 · 調班存檔後所有人看到的班表同步更新（每 30 秒自動更新） · <span id="verFoot"></span><br>橫幅照片：Tsukada Kazuhiro／Unsplash · 圖示：Lucide</div>
+  <div class="foot">班表來源：營三部幹部班表 · 調班存檔後所有人看到的班表同步更新（每 30 秒自動更新） · <span id="verFoot"></span><br>圖示：Lucide</div>
 </div>
 
 <div class="sheet-bg" id="sheet" hidden>
@@ -454,6 +453,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.1", d:"2026-10-07", items:[ "橫幅改成乾淨版：拿掉背景照片和裝飾，「營業三部」放大", "月份改成「‹ 115年10月 ›」切換列，左右鍵換月，中間點開可直接選", "理級名片只顯示職稱（協理／經理／副理／理級）", "登入頁拿掉照片，改成簡單圖示" ]},
   { v:"3.0", d:"2026-10-07", items:[ "賽博風格改為預設（要原本樣式可用 ?theme=light）", "「主管」改稱「理級」，排序：協理 → 經理 → 副理 → 其他理級", "橫幅和登入頁改用 Unsplash 開源照片（攝影：Tsukada Kazuhiro），圖示換成 Lucide 開源圖示" ]},
   { v:"2.3", d:"2026-10-07", items:[ "新增賽博風格（試用）：網址加 ?theme=cyber 開啟，會記住；加 ?theme=light 換回原本樣式" ]},
   { v:"2.2", d:"2026-10-07", items:[ "整體文字加粗放大、提高對比：名字、班別、區域標籤、日期都更醒目", "區域標籤（YA／SD…）改成實色底白字" ]},
@@ -594,7 +594,7 @@ function renderDetail(){
   h += `<div class="sec">${ICON_BADGE}理級</div><div class="mgrs">`;
   let anyVice = false; const offMgr = [];
   const mgCard = (n, i) => { const p = m.people[n]; const ii = {...i, off: !i.work, shift: i.work ? i.shift : (i.shift||"休")};
-    return `<div class="mg${VICE.includes(n)?" vice":""}">${personLine(n, ii, esc((VICE.includes(n)?"副理・":"")+(p.title||"")+(p.area?"・"+p.area:"")))}</div>`; };
+    return `<div class="mg${VICE.includes(n)?" vice":""}">${personLine(n, ii, esc(VICE.includes(n)?"副理":(p.title||"")))}</div>`; };
   for(const n of mOrder){
     const i = info(m.people[n], cells[n][d]);
     if(VICE.includes(n) && i.work) anyVice = true;
@@ -798,6 +798,7 @@ async function load(){
     if(JSON.stringify(S.swaps)!==before || lockChanged) { renderGrid(); renderDetail(); renderHist(); showCur(); showAdm(); }
   }
   $("live").hidden = true;
+  updMnav();
   return true;
 }
 function showGate(t){ $("gate").hidden = false; $("app").hidden = true; $("gateMsg").textContent = t||""; setTimeout(()=>$("gpw").focus(),50); }
@@ -834,7 +835,9 @@ $("grid").addEventListener("click", e=>{
   if(S.user){ $("aDay").value = S.sel; showCur(); }
   if(matchMedia("(max-width:860px)").matches) $("detail").scrollIntoView({behavior:"smooth",block:"start"});
 });
-$("monthSel").addEventListener("change", e=>setMonth(e.target.value));
+function updMnav(){ const s=$("monthSel"); document.querySelectorAll(".mnav").forEach(b=>{ const i=s.selectedIndex + +b.dataset.m; b.disabled = i<0 || i>=s.options.length; }); }
+$("monthSel").addEventListener("change", e=>{ setMonth(e.target.value); updMnav(); });
+document.querySelectorAll(".mnav").forEach(b=>b.addEventListener("click", ()=>{ const s=$("monthSel"); const i=s.selectedIndex + +b.dataset.m; if(i>=0 && i<s.options.length){ s.selectedIndex=i; setMonth(s.value); } updMnav(); }));
 $("loginBtn").addEventListener("click", doLogin);
 $("pw").addEventListener("keydown", e=>{ if(e.key==="Enter") doLogin(); });
 $("logoutBtn").addEventListener("click", ()=>{ S.user=null; S.admin=false; S.pw=""; $("admTag").hidden=true; $("admBox").hidden=true; $("aName").disabled=true; S.delAt=null; $("aName").innerHTML=""; renderHist(); $("swapBox").hidden=true; $("loginBox").hidden=false; msg(""); });
