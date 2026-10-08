@@ -2,6 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8">
+<meta http-equiv="Cache-Control" content="no-cache">
 <script>try{var q=new URLSearchParams(location.search).get("theme");if(q)localStorage.setItem("roster_theme",q);if((q||localStorage.getItem("roster_theme")||"cyber")==="cyber")document.documentElement.classList.add("cyber");}catch(e){}</script>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
@@ -467,6 +468,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.14", d:"2026-10-08", items:[ "打開或切回網頁時自動檢查新版，手機有舊快取也會自動換成最新版" ]},
   { v:"3.13", d:"2026-10-08", items:[ "移除籠統的「休」選項，休假請選班表上的假別（本1～本8、國14～16、國補…）" ]},
   { v:"3.12", d:"2026-10-08", items:[ "讀不到班表時自動快速重試（不用等 30 秒）" ]},
   { v:"3.11", d:"2026-10-07", items:[ "右邊「換成」可選班表上出現過的所有班別（K、L、Y 班、本1～本8、國14～16、A、月會…）以及「休」", "修正 KA 沒被當成上班班別的問題" ]},
@@ -866,7 +868,20 @@ function renderVersions(){
   $("verNow").textContent = `目前 v${VERSIONS[0].v}`; $("verFoot").textContent = `v${VERSIONS[0].v}`;
   $("verList").innerHTML = VERSIONS.map(x=>`<li><div class="meta"><span class="who">v${x.v}</span><time>${x.d}</time></div><div>${x.items.map(i=>"・"+esc(i)).join("<br>")}</div></li>`).join("");
 }
+// 自動檢查新版：瀏覽器有快取舊頁面時，自動換成最新版
+async function checkUpdate(){
+  try{
+    const t = await fetch(location.pathname + "?_=" + Date.now(), { cache:"no-store" }).then(r=>r.text());
+    const nv = (t.match(/v:"(\d+\.\d+)"/)||[])[1];
+    if(nv && nv !== VERSIONS[0].v && sessionStorage.getItem("roster_upd") !== nv){
+      sessionStorage.setItem("roster_upd", nv);
+      location.replace(location.pathname + "?v=" + nv);
+    }
+  }catch(e){}
+}
+document.addEventListener("visibilitychange", ()=>{ if(!document.hidden) checkUpdate(); });
 async function boot(){
+  checkUpdate();
   renderVersions();
   S.allSwaps = [];
   // v3.4：看班表不需要密碼，直接開啟（調班仍需登入）
