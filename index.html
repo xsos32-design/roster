@@ -474,6 +474,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.17", d:"2026-10-08", items:[ "K5 排到 K6 前面", "休假選項改成：本休、補休、A" ]},
   { v:"3.16", d:"2026-10-08", items:[ "班別選項移除 L9改櫃、YA、YB、YP、YQ", "本休、國定統一成一個「休」" ]},
   { v:"3.15", d:"2026-10-08", items:[ "班別按鈕改成班表上所有類別：上班、本休（本1～本8）、國定（國14～16、國補…）、其他（A、月會…）" ]},
   { v:"3.14", d:"2026-10-08", items:[ "打開或切回網頁時自動檢查新版，手機有舊快取也會自動換成最新版" ]},
@@ -553,7 +554,7 @@ function current(){                         // base cells + swaps replayed in ti
   return { m, cells, touched };
 }
 const isLocked = d => (S.locks||[]).some(l=>l.month===S.mk && String(l.day)===String(d));
-const OFF_RE = /本\s*\d|國\s*\d|國補|國休|^國$|喪|補休|加補|特休|^A$|^休$/;
+const OFF_RE = /本\s*\d|本休|國\s*\d|國補|國休|^國$|喪|補休|加補|特休|^A$|^休$/;
 function info(p, raw){
   const v = (raw||"").trim();
   const fd = /FD/i.test(v);
@@ -709,14 +710,15 @@ async function delSwap(at){
 }
 
 /* ---------- settings ---------- */
-const SHIFTS = ["K6","K8","KA","L0","L2","L4","L9"];
+const SHIFTS = ["K5","K6","K8","KA","L0","L2","L4","L9"];
+const OFFS = ["本休","補休","A"];
 const normSh = v => String(v||"").replace(/FD/ig,"").replace(/(志工|義工)/g,"").replace(/\s+/g,"").trim();
 function allShifts(m){
   const set = new Set();
-  for(const n of Object.keys(m.people)) for(const v of Object.values(m.people[n].cells||{})){ const x = normSh(v).replace(/^[kly]/, c=>c.toUpperCase()); if(x && x.length<=4 && !SHIFTS.includes(x) && x!=="休" && !/^(Y|本|國)/.test(x) && !/改櫃/.test(x)) set.add(x); }
+  for(const n of Object.keys(m.people)) for(const v of Object.values(m.people[n].cells||{})){ const x = normSh(v).replace(/^[kly]/, c=>c.toUpperCase()); if(x && x.length<=4 && !SHIFTS.includes(x) && !OFFS.includes(x) && x!=="休" && !/^(Y|本|國)/.test(x) && !/改櫃/.test(x)) set.add(x); }
   const rank = x => /^[KLY]/i.test(x) ? 0 : /^本/.test(x) ? 1 : /^國/.test(x) ? 2 : 3;
   const rest = [...set].sort((a,b)=> rank(a)-rank(b) || a.localeCompare(b,"zh-Hant",{numeric:true}));
-  return [...SHIFTS, ...rest.filter(x=>/^[KL]/i.test(x)), "休", ...rest.filter(x=>!/^[KL]/i.test(x))];
+  return [...SHIFTS, ...rest.filter(x=>/^[KL]/i.test(x)), ...OFFS, ...rest.filter(x=>!/^[KL]/i.test(x))];
 }
 function fillSelectors(){
   const m = S.months[S.mk]; if(!m) return;
@@ -732,7 +734,7 @@ function fillSelectors(){
   for(const id of ["sDay","lDay"]){ const k=$(id).value; $(id).innerHTML = dayOpts; if(k) $(id).value=k; }
   { const k=$("sName").value; $("sName").innerHTML = nameOpts; if(k) $("sName").value=k; }
   showAdm();
-  { const all = allShifts(m), grp = [["上班", x=>/^[KL]/i.test(x)], ["休假", x=>x==="休"], ["其他", ()=>true]], used = new Set();
+  { const all = allShifts(m), grp = [["上班", x=>/^[KL]/i.test(x)], ["休假", x=>OFFS.includes(x)], ["其他", ()=>true]], used = new Set();
     $("shChips").innerHTML = grp.map(([lab,f])=>{ const xs = all.filter(x=>!used.has(x) && f(x)); xs.forEach(x=>used.add(x)); return xs.length ? `<div class="shg"><span class="shl">${lab}</span>${xs.map(x=>`<button type="button" class="${lab==="上班"?"":"offc"}" data-sh="${esc(x)}">${esc(x)}</button>`).join("")}</div>` : ""; }).join(""); }
   { const k=$("bName").value; $("bName").innerHTML = `<optgroup label="改成班別">${allShifts(m).map(x=>`<option value="@${esc(x)}">${esc(x)}</option>`).join("")}</optgroup><optgroup label="跟人對調">${nameOpts}</optgroup>`; if(k) $("bName").value=k; }
   showCur();
