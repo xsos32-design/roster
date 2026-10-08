@@ -378,6 +378,12 @@ html.cyber .sside{border-radius:6px} html.cyber .sarrow{color:#F5E43A}
 .shchips button.on{background:var(--navy);color:var(--card)}
 html.cyber .shchips button{border-radius:4px;border-color:#22E6FF;color:#22E6FF;background:transparent}
 html.cyber .shchips button.on{background:#22E6FF;color:#04121A}
+.shchips{display:grid;gap:8px}
+.shg{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.shg .shl{min-width:2.6em}
+.shchips button.offc{border-style:dashed;border-color:var(--off);color:var(--mute)}
+html.cyber .shchips button.offc{border-color:#6E6A94;color:#B8BCD8}
+.shchips button.offc.on,html.cyber .shchips button.offc.on{background:var(--mute);color:var(--card);border-style:solid}
 </style>
 </head>
 <body>
@@ -420,8 +426,8 @@ html.cyber .shchips button.on{background:#22E6FF;color:#04121A}
         <div class="sarrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg></div>
         <div class="sside"><div class="slab">換成</div><select id="bName" aria-label="班別或人名"></select><select id="bDay" aria-label="日期"></select><div class="scur" id="bCur"></div></div>
       </div>
-      <div class="shchips" id="shChips"><span class="shl">常用</span><button type="button" data-sh="K6">K6</button><button type="button" data-sh="K8">K8</button><button type="button" data-sh="KA">KA</button><button type="button" data-sh="L0">L0</button><button type="button" data-sh="L2">L2</button><button type="button" data-sh="L4">L4</button><button type="button" data-sh="L9">L9</button></div>
-      <div class="hint">右邊選自己＝自己兩天的班對調；選別人＝同一天互換；右邊選單最上面是班表上所有班別（含本1～本8、國14～16 等假別），選了就直接把左邊這天改成該班別。</div>
+      <div class="shchips" id="shChips"></div>
+      <div class="hint">右邊選自己＝自己兩天的班對調；選別人＝同一天互換；按上面的班別（上班／本休／國定／其他）或右邊選單選班別，就直接把左邊這天改成該班別。</div>
       <div class="frow"><button class="primary" id="saveBtn">存檔</button></div>
       <div class="confirm" id="confirmBox" hidden>
         <div id="confirmText"></div>
@@ -468,6 +474,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.15", d:"2026-10-08", items:[ "班別按鈕改成班表上所有類別：上班、本休（本1～本8）、國定（國14～16、國補…）、其他（A、月會…）" ]},
   { v:"3.14", d:"2026-10-08", items:[ "打開或切回網頁時自動檢查新版，手機有舊快取也會自動換成最新版" ]},
   { v:"3.13", d:"2026-10-08", items:[ "移除籠統的「休」選項，休假請選班表上的假別（本1～本8、國14～16、國補…）" ]},
   { v:"3.12", d:"2026-10-08", items:[ "讀不到班表時自動快速重試（不用等 30 秒）" ]},
@@ -724,6 +731,8 @@ function fillSelectors(){
   for(const id of ["sDay","lDay"]){ const k=$(id).value; $(id).innerHTML = dayOpts; if(k) $(id).value=k; }
   { const k=$("sName").value; $("sName").innerHTML = nameOpts; if(k) $("sName").value=k; }
   showAdm();
+  { const all = allShifts(m), grp = [["上班", x=>/^[KLY]/i.test(x)], ["本休", x=>/^本/.test(x)], ["國定", x=>/^國/.test(x)], ["其他", ()=>true]], used = new Set();
+    $("shChips").innerHTML = grp.map(([lab,f])=>{ const xs = all.filter(x=>!used.has(x) && f(x)); xs.forEach(x=>used.add(x)); return xs.length ? `<div class="shg"><span class="shl">${lab}</span>${xs.map(x=>`<button type="button" class="${lab==="上班"?"":"offc"}" data-sh="${esc(x)}">${esc(x)}</button>`).join("")}</div>` : ""; }).join(""); }
   { const k=$("bName").value; $("bName").innerHTML = `<optgroup label="改成班別">${allShifts(m).map(x=>`<option value="@${esc(x)}">${esc(x)}</option>`).join("")}</optgroup><optgroup label="跟人對調">${nameOpts}</optgroup>`; if(k) $("bName").value=k; }
   showCur();
 }
