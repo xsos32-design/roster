@@ -427,7 +427,7 @@ html.cyber .shchips button.offc{border-color:#6E6A94;color:#B8BCD8}
         <div class="sside"><div class="slab">換成</div><select id="bName" aria-label="班別或人名"></select><select id="bDay" aria-label="日期"></select><div class="scur" id="bCur"></div></div>
       </div>
       <div class="shchips" id="shChips"></div>
-      <div class="hint">右邊選自己＝自己兩天的班對調；選別人＝同一天互換；按上面的班別（上班／本休／國定／其他）或右邊選單選班別，就直接把左邊這天改成該班別。</div>
+      <div class="hint">右邊選自己＝自己兩天的班對調；選別人＝同一天互換；按上面的班別（上班／休假／其他）或右邊選單選班別，就直接把左邊這天改成該班別。</div>
       <div class="frow"><button class="primary" id="saveBtn">存檔</button></div>
       <div class="confirm" id="confirmBox" hidden>
         <div id="confirmText"></div>
@@ -474,6 +474,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.16", d:"2026-10-08", items:[ "班別選項移除 L9改櫃、YA、YB、YP、YQ", "本休、國定統一成一個「休」" ]},
   { v:"3.15", d:"2026-10-08", items:[ "班別按鈕改成班表上所有類別：上班、本休（本1～本8）、國定（國14～16、國補…）、其他（A、月會…）" ]},
   { v:"3.14", d:"2026-10-08", items:[ "打開或切回網頁時自動檢查新版，手機有舊快取也會自動換成最新版" ]},
   { v:"3.13", d:"2026-10-08", items:[ "移除籠統的「休」選項，休假請選班表上的假別（本1～本8、國14～16、國補…）" ]},
@@ -712,10 +713,10 @@ const SHIFTS = ["K6","K8","KA","L0","L2","L4","L9"];
 const normSh = v => String(v||"").replace(/FD/ig,"").replace(/(志工|義工)/g,"").replace(/\s+/g,"").trim();
 function allShifts(m){
   const set = new Set();
-  for(const n of Object.keys(m.people)) for(const v of Object.values(m.people[n].cells||{})){ const x = normSh(v).replace(/^[kly]/, c=>c.toUpperCase()); if(x && x.length<=4 && !SHIFTS.includes(x) && x!=="休") set.add(x); }
+  for(const n of Object.keys(m.people)) for(const v of Object.values(m.people[n].cells||{})){ const x = normSh(v).replace(/^[kly]/, c=>c.toUpperCase()); if(x && x.length<=4 && !SHIFTS.includes(x) && x!=="休" && !/^(Y|本|國)/.test(x) && !/改櫃/.test(x)) set.add(x); }
   const rank = x => /^[KLY]/i.test(x) ? 0 : /^本/.test(x) ? 1 : /^國/.test(x) ? 2 : 3;
   const rest = [...set].sort((a,b)=> rank(a)-rank(b) || a.localeCompare(b,"zh-Hant",{numeric:true}));
-  return [...SHIFTS, ...rest];
+  return [...SHIFTS, ...rest.filter(x=>/^[KL]/i.test(x)), "休", ...rest.filter(x=>!/^[KL]/i.test(x))];
 }
 function fillSelectors(){
   const m = S.months[S.mk]; if(!m) return;
@@ -731,7 +732,7 @@ function fillSelectors(){
   for(const id of ["sDay","lDay"]){ const k=$(id).value; $(id).innerHTML = dayOpts; if(k) $(id).value=k; }
   { const k=$("sName").value; $("sName").innerHTML = nameOpts; if(k) $("sName").value=k; }
   showAdm();
-  { const all = allShifts(m), grp = [["上班", x=>/^[KLY]/i.test(x)], ["本休", x=>/^本/.test(x)], ["國定", x=>/^國/.test(x)], ["其他", ()=>true]], used = new Set();
+  { const all = allShifts(m), grp = [["上班", x=>/^[KL]/i.test(x)], ["休假", x=>x==="休"], ["其他", ()=>true]], used = new Set();
     $("shChips").innerHTML = grp.map(([lab,f])=>{ const xs = all.filter(x=>!used.has(x) && f(x)); xs.forEach(x=>used.add(x)); return xs.length ? `<div class="shg"><span class="shl">${lab}</span>${xs.map(x=>`<button type="button" class="${lab==="上班"?"":"offc"}" data-sh="${esc(x)}">${esc(x)}</button>`).join("")}</div>` : ""; }).join(""); }
   { const k=$("bName").value; $("bName").innerHTML = `<optgroup label="改成班別">${allShifts(m).map(x=>`<option value="@${esc(x)}">${esc(x)}</option>`).join("")}</optgroup><optgroup label="跟人對調">${nameOpts}</optgroup>`; if(k) $("bName").value=k; }
   showCur();
