@@ -404,6 +404,22 @@ html.cyber .tabbar button.on svg{filter:drop-shadow(0 0 6px rgba(34,230,255,.7))
 .pl .chg{font-size:10px;font-weight:900;line-height:1.5;padding:0 4px;border-radius:3px;background:#FF2BD6;color:#16001C;flex:none}
 html:not(.cyber) .pl .chg{background:var(--bad);color:#fff}
 .day .dot{position:absolute;top:4px;left:4px;width:7px;height:7px;border-radius:50%;background:#FF2BD6;box-shadow:0 0 6px rgba(255,43,214,.8)}
+
+/* 星期欄位對照網格 */
+.dow{margin-bottom:4px}
+.dow div{border-radius:4px;padding:3px 0;background:var(--soft);border:1px solid var(--line)}
+.dow div:nth-child(even){background:#1C1840}
+.dow .sat{background:#0B2A36 !important;border-color:rgba(34,230,255,.45)}
+.dow .sun{background:#2E0E1E !important;border-color:rgba(255,61,110,.5)}
+.grid .day.empty{visibility:visible;background:transparent !important;border:1px dashed rgba(154,162,200,.18) !important;box-shadow:none !important}
+.grid .day:nth-child(7n+2):not(.today):not(.hol):not(.sel):not(.empty),.grid .day:nth-child(7n+4):not(.today):not(.hol):not(.sel):not(.empty){background:#1A1638}
+.grid .day:nth-child(7n+6):not(.today):not(.hol):not(.sel):not(.empty){background:#0B2230;border-color:rgba(34,230,255,.35)}
+.grid .day:nth-child(7n):not(.today):not(.hol):not(.sel):not(.empty){background:#240C19;border-color:rgba(255,61,110,.4)}
+.grid .day:nth-child(7n+6):not(.today) .n{color:#22E6FF}
+.grid .day:nth-child(7n):not(.today) .n{color:var(--bad)}
+html:not(.cyber) .dow div:nth-child(even),html:not(.cyber) .grid .day:nth-child(7n+2):not(.today):not(.hol):not(.sel):not(.empty),html:not(.cyber) .grid .day:nth-child(7n+4):not(.today):not(.hol):not(.sel):not(.empty){background:#EEF0F8}
+html:not(.cyber) .dow .sat,html:not(.cyber) .grid .day:nth-child(7n+6):not(.today):not(.hol):not(.sel):not(.empty){background:#E6F4FA !important}
+html:not(.cyber) .dow .sun,html:not(.cyber) .grid .day:nth-child(7n):not(.today):not(.hol):not(.sel):not(.empty){background:#FBEAEA !important}
 </style>
 </head>
 <body>
@@ -496,6 +512,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.22", d:"2026-10-10", items:[ "月曆加上星期網格：每一直排配色對應上方星期，週六藍、週日紅" ]},
   { v:"3.21", d:"2026-10-10", items:[ "月曆改成週一開始（一～日）", "日期格內不再重複顯示星期" ]},
   { v:"3.20", d:"2026-10-10", items:[ "月曆上有人調班的日子左上角顯示粉紅點", "當日班表中被調過班的人，名字旁標「已調」" ]},
   { v:"3.19", d:"2026-10-10", items:[ "調班區加上「改班別／跟人對調」切換，畫面更簡單", "當日班表可左右滑動換日期", "手機底部固定選單：月曆／當日／調班／紀錄" ]},
