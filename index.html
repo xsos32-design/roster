@@ -384,6 +384,22 @@ html.cyber .shchips button.on{background:#22E6FF;color:#04121A}
 .shchips button.offc{border-style:dashed;border-color:var(--off);color:var(--mute)}
 html.cyber .shchips button.offc{border-color:#6E6A94;color:#B8BCD8}
 .shchips button.offc.on,html.cyber .shchips button.offc.on{background:var(--mute);color:var(--card);border-style:solid}
+.smode{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:10px}
+.smode button{border:0;border-radius:0;min-height:44px;font-weight:900;font-size:15px;background:transparent;color:var(--mute)}
+.smode button.on{background:var(--navy);color:var(--card)}
+html.cyber .smode{border-color:rgba(34,230,255,.4);border-radius:6px} html.cyber .smode button.on{background:#22E6FF;color:#04121A}
+.scur .bd{font-size:22px;min-width:4.2em;padding:8px 12px}
+#sHint{margin-top:8px}
+
+.tabbar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:grid;grid-template-columns:repeat(4,1fr);background:rgba(10,9,22,.94);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-top:1px solid rgba(34,230,255,.3);padding:4px 6px calc(4px + env(safe-area-inset-bottom,0px))}
+html:not(.cyber) .tabbar{background:rgba(255,255,255,.95);border-top-color:var(--line)}
+.tabbar button{appearance:none;background:none !important;border:0 !important;box-shadow:none !important;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:11px;font-weight:700;color:var(--mute) !important;min-height:50px;padding:4px 0;border-radius:8px}
+.tabbar button svg{width:22px;height:22px}
+.tabbar button.on{color:var(--navy) !important}
+html.cyber .tabbar button.on svg{filter:drop-shadow(0 0 6px rgba(34,230,255,.7))}
+.wrap{padding-bottom:84px}
+.swipehint{text-align:center;font-size:11px;color:var(--off);margin:2px 0 4px}
+@media (min-width:861px){.tabbar{display:none}.wrap{padding-bottom:40px}.swipehint{display:none}}
 </style>
 </head>
 <body>
@@ -398,7 +414,7 @@ html.cyber .shchips button.offc{border-color:#6E6A94;color:#B8BCD8}
 
   <div class="stripe" aria-hidden="true"></div>
   <div class="main">
-    <section class="panel" aria-label="月曆">
+    <section class="panel" aria-label="月曆" id="calBox">
       <h2 class="ptitle" style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18M8 14h.01M12 14h.01M16 14h.01M8 18h.01M12 18h.01M16 18h.01"/></svg><span id="calTitle">月曆</span></h2>
       <div class="dow" id="dow"></div>
       <div class="grid" id="grid"><div class="loading" style="grid-column:1/-1">讀取班表中…</div></div>
@@ -421,13 +437,14 @@ html.cyber .shchips button.offc{border-color:#6E6A94;color:#B8BCD8}
     </div>
     <div id="swapBox" class="form" hidden>
       <div class="frow" style="justify-content:space-between"><span>已登入：<b id="whoName"></b><span class="adm" id="admTag" hidden>管理者</span></span><button id="logoutBtn">登出</button></div>
+      <div class="smode" id="sMode"><button type="button" data-m="set" class="on">改班別</button><button type="button" data-m="swap">跟人對調</button></div>
       <div class="swapgrid">
         <div class="sside"><div class="slab">我的班</div><select id="aName" aria-label="人名" disabled></select><select id="aDay" aria-label="日期"></select><div class="scur" id="aCur"></div></div>
         <div class="sarrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3 4 7l4 4"/><path d="M4 7h16"/><path d="m16 21 4-4-4-4"/><path d="M20 17H4"/></svg></div>
         <div class="sside"><div class="slab">換成</div><select id="bName" aria-label="班別或人名"></select><select id="bDay" aria-label="日期"></select><div class="scur" id="bCur"></div></div>
       </div>
       <div class="shchips" id="shChips"></div>
-      <div class="hint">右邊選自己＝自己兩天的班對調；選別人＝同一天互換；按上面的班別（上班／休假）或右邊選單選班別，就直接把左邊這天改成該班別。</div>
+      <div class="hint" id="sHint"></div>
       <div class="frow"><button class="primary" id="saveBtn">存檔</button></div>
       <div class="confirm" id="confirmBox" hidden>
         <div id="confirmText"></div>
@@ -445,7 +462,7 @@ html.cyber .shchips button.offc{border-color:#6E6A94;color:#B8BCD8}
     </div>
   </details>
 
-  <section class="panel">
+  <section class="panel" id="histBox">
     <h2 class="ptitle" style="color:var(--navy)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>歷史更改紀錄<span class="hint" id="histCount" style="margin-left:auto;font-weight:500"></span></h2>
     <ul class="hist" id="hist"><li class="empty-state">這個月還沒有人調班。</li></ul>
   </section>
@@ -456,6 +473,7 @@ html.cyber .shchips button.offc{border-color:#6E6A94;color:#B8BCD8}
   <div class="foot">班表來源：營三部幹部班表 · 調班存檔後所有人看到的班表同步更新（每 30 秒自動更新） · <span id="verFoot"></span><br>圖示：Lucide</div>
 </div>
 
+<nav class="tabbar" id="tabbar"><button type="button" data-t="calBox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="18" x="3" y="4" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>月曆</button><button type="button" data-t="detail"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>當日</button><button type="button" data-t="setBox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m16 3 4 4-4 4"/><path d="M20 7H4"/><path d="m8 21-4-4 4-4"/><path d="M4 17h16"/></svg>調班</button><button type="button" data-t="histBox"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l4 2"/></svg>紀錄</button></nav>
 <div class="sheet-bg" id="sheet" hidden>
   <div class="sheet" role="dialog" aria-modal="true" aria-labelledby="shName">
     <div class="who"><span class="av" id="shAv"></span><div><b id="shName"></b><span class="hint" id="shSub"></span></div></div>
@@ -474,6 +492,7 @@ const API = "https://script.google.com/macros/s/AKfycbx7JhA9vvDIjwdbJaE_1TSlTTYp
 const WD = ["日","一","二","三","四","五","六"];
 /* 版本更新紀錄：新版本加在最上面 */
 const VERSIONS = [
+  { v:"3.19", d:"2026-10-10", items:[ "調班區加上「改班別／跟人對調」切換，畫面更簡單", "當日班表可左右滑動換日期", "手機底部固定選單：月曆／當日／調班／紀錄" ]},
   { v:"3.18", d:"2026-10-08", items:[ "移除「其他」班別選項（月會、主管會議、加班補休、加補8H、喪、課）" ]},
   { v:"3.17", d:"2026-10-08", items:[ "K5 排到 K6 前面", "休假選項改成：本休、補休、A" ]},
   { v:"3.16", d:"2026-10-08", items:[ "班別選項移除 L9改櫃、YA、YB、YP、YQ", "本休、國定統一成一個「休」" ]},
@@ -625,6 +644,7 @@ function renderDetail(){
   const { m, cells } = c; const d = S.sel;
   const wd = WD[dateOf(m,d).getDay()]; const hol = HOL[hk(m,d)]; const note=(m.notes||{})[d]||"";
   let h = `<div class="dh"><button type="button" class="nav" data-go="-1" aria-label="前一天"${d<=1?" disabled":""}>‹</button><div class="dmid"><span class="dt${hol?" red":""}">${m.month}月${d}日</span><span class="dw">週${wd}</span>${hol?`<span class="tag red">${esc(hol)}</span>`:""}${note?`<span class="tag">${esc(note)}</span>`:""}${isLocked(d)?`<span class="lkn"><svg class="lk" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>已鎖定・不能調班</span>`:""}</div><button type="button" class="nav" data-go="1" aria-label="後一天"${d>=m.days?" disabled":""}>›</button></div>`;
+  h += `<div class="swipehint">← 左右滑動換日期 →</div>`;
   // 主管
   const mgrs = m.order.filter(n=>m.people[n]?.kind==="mgr");
   const rk = n => { const t = m.people[n].title||""; return t.includes("協理")?0 : t.includes("經理")?1 : VICE.includes(n)?2 : 3; };
@@ -774,7 +794,7 @@ async function doLogin(){
   S.pw = pw; S.admin = !!j.admin; $("admTag").hidden = !S.admin; $("admBox").hidden = !S.admin;
   $("aName").disabled = !S.admin;
   S.user = $("who").value; $("whoName").textContent = S.user; S.histMsg = null; renderHist();
-  fillSelectors(); $("aName").value = S.user; $("bName").value = S.user; renderHist();
+  fillSelectors(); $("aName").value = S.user; $("bName").value = S.user; renderHist(); applyMode();
   $("loginBox").hidden = true; $("swapBox").hidden = false; $("pw").value=""; $("loginMsg").textContent="";
   if(S.sel){ $("aDay").value = S.sel; $("bDay").value = S.sel; showCur(); }
 }
@@ -919,6 +939,22 @@ $("loginBtn").addEventListener("click", doLogin);
 $("pw").addEventListener("keydown", e=>{ if(e.key==="Enter") doLogin(); });
 $("logoutBtn").addEventListener("click", ()=>{ S.user=null; S.admin=false; S.pw=""; $("admTag").hidden=true; $("admBox").hidden=true; $("aName").disabled=true; S.delAt=null; $("aName").innerHTML=""; renderHist(); $("swapBox").hidden=true; $("loginBox").hidden=false; msg(""); });
 for(const id of ["aDay","aName","bDay","bName"]) $(id).addEventListener("change", showCur);
+
+// 調班模式切換
+S.smode = "set";
+function applyMode(){
+  const set = S.smode==="set";
+  document.querySelectorAll("#sMode button").forEach(b=>b.classList.toggle("on", b.dataset.m===S.smode));
+  $("shChips").hidden = !set;
+  $("bName").hidden = set; 
+  document.querySelector(".sside:last-child .slab").textContent = set ? "改成" : "對調對象";
+  if(set){ if(!$("bName").value.startsWith("@")){ $("bName").value = "@" + SHIFTS[1]; } }
+  else { if($("bName").value.startsWith("@")){ $("bName").value = $("aName").value; } }
+  $("sHint").textContent = set ? "選日期 → 點下面班別 → 確認" : "選自己＝自己兩天對調；選別人＝同一天互換";
+  [...$("bName").querySelectorAll("optgroup")].forEach(g=>{ g.hidden = set ? false : g.label==="改成班別"; });
+  $("confirmBox").hidden = true; showCur();
+}
+$("sMode").addEventListener("click", e=>{ const b=e.target.closest("[data-m]"); if(!b) return; S.smode=b.dataset.m; applyMode(); });
 $("shChips").addEventListener("click", e=>{ const b=e.target.closest("[data-sh]"); if(!b) return; $("bName").value = "@"+b.dataset.sh; $("confirmBox").hidden = true; showCur(); askSave(); });
 $("bName").addEventListener("change", ()=>{ $("confirmBox").hidden = true; if(!$("bName").value.startsWith("@") && $("bName").value !== $("aName").value){ $("bDay").value = $("aDay").value; showCur(); } });
 $("aDay").addEventListener("change", ()=>{ if(!$("bName").value.startsWith("@") && $("bName").value !== $("aName").value){ $("bDay").value = $("aDay").value; showCur(); } });
@@ -954,6 +990,13 @@ $("shCopy").addEventListener("click", ()=>{
   try{ navigator.clipboard.writeText(t).then(()=>{ $("shMsg").textContent="已複製 "+t; }, sel); }catch(e){ sel(); }
   function sel(){ const r=document.createRange(); r.selectNodeContents($("shNum")); const g=getSelection(); g.removeAllRanges(); g.addRange(r); $("shMsg").textContent="已選取號碼，請長按複製。"; }
 });
+
+function goDay(nd){ const m=S.months[S.mk]; if(!m || nd<1 || nd>m.days) return; S.sel=nd; renderGrid(); renderDetail(); if(S.user){ $("aDay").value=S.sel; showCur(); } }
+{ let x0=null,y0=null; const d=$("detail");
+  d.addEventListener("touchstart", e=>{ x0=e.touches[0].clientX; y0=e.touches[0].clientY; }, {passive:true});
+  d.addEventListener("touchend", e=>{ if(x0===null) return; const dx=e.changedTouches[0].clientX-x0, dy=e.changedTouches[0].clientY-y0; x0=null; if(Math.abs(dx)>60 && Math.abs(dx)>Math.abs(dy)*1.5) goDay(S.sel + (dx<0?1:-1)); }, {passive:true}); }
+$("tabbar").addEventListener("click", e=>{ const b=e.target.closest("[data-t]"); if(!b) return; const t=$(b.dataset.t); if(t.tagName==="DETAILS") t.open=true; t.scrollIntoView({behavior:"smooth",block:"start"}); });
+{ const ids=["calBox","detail","setBox","histBox"]; const mark=()=>{ let cur=ids[0]; for(const id of ids){ if($(id).getBoundingClientRect().top < innerHeight*0.4) cur=id; } document.querySelectorAll("#tabbar button").forEach(b=>b.classList.toggle("on", b.dataset.t===cur)); }; addEventListener("scroll", mark, {passive:true}); setTimeout(mark,500); }
 boot();
 </script>
 
